@@ -88,3 +88,55 @@ input:focus {
 .btn-blue:hover {
   background: #229ea4;
 }
+
+.register-form input {
+  height: 45px;
+  font-size: 1rem;
+  border-radius: 8px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.password-input-container {
+  position: relative;
+  width: 100%;
+}
+
+.password-input-container input {
+  height: 45px;
+  font-size: 1rem;
+  border-radius: 8px;
+  padding: 10px 40px 10px 12px; 
+  border: 1px solid #ccc;
+  background-color: #f9f9f9;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.eye-icon {
+  position: absolute;
+  right: 12px;
+  top: 40%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 1.1rem;
+  user-select: none;
+}
+
+.eye-icon:hover {
+  color: #333;
+}
+
+
+.register-form input:focus,
+.password-input-container input:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}

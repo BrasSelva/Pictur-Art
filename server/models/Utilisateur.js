@@ -9,7 +9,7 @@ const utilisateurSchema = new mongoose.Schema({
 
 // Hachage du mot de passe
 utilisateurSchema.pre('save', async function (next) {
-  if (!this.isModified('mot_de_passe')) return next(); // si déjà hashé
+  if (!this.isModified('mot_de_passe')) return next();
   try {
     const salt = await bcrypt.genSalt(10);
     this.mot_de_passe = await bcrypt.hash(this.mot_de_passe, salt);

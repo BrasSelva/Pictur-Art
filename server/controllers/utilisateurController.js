@@ -8,6 +8,10 @@ exports.creerUtilisateur = async (req, res) => {
       return res.status(400).json({ message: "Tous les champs sont requis." });
     }
 
+    if (emailDejaExistant) {
+      return res.status(409).json({ message: "Email déjà utilisé" });
+    }
+
     //Création de l'utilisateur
     const nouvelUtilisateur = new Utilisateur({ nom, email, mot_de_passe });
     await nouvelUtilisateur.save();
