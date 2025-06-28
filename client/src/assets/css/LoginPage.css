@@ -1,0 +1,146 @@
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  background-color: #f9fafb;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Section gauche */
+.login-container .left-section {
+  flex: 1;
+  background-color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+}
+
+.login-container .logo {
+  width: 96px;
+  height: 96px;
+  margin-bottom: 1.5rem;
+}
+
+.login-container h1 span:first-child {
+  color: #14b8a6;
+}
+
+.login-container h1 span:last-child {
+  color: #f97316;
+}
+
+.login-container .left-section h2 {
+  font-size: 1.25rem;
+  color: #1f2937;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.login-container .left-section p {
+  font-size: 1.125rem;
+  color: #4b5563;
+  text-align: center;
+}
+
+/* Section droite */
+.login-container .right-section {
+  flex: 1;
+  background-color: #f9fafb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem;
+}
+
+.login-card {
+  background-color: white;
+  padding: 2rem;
+  border-radius: 1rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.05);
+  width: 100%;
+  max-width: 400px;
+}
+
+.login-card h2 {
+  font-size: 1.5rem;
+  color: #1f2937;
+  text-align: center;
+  margin-bottom: 2rem;
+  font-weight: 700;
+}
+
+.login-card label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.login-card input {
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.25rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.login-card input:focus {
+  border-color: #f97316;
+  box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+}
+
+.login-card .password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 1rem;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #9ca3af;
+}
+
+.login-button {
+  width: 100%;
+  background: linear-gradient(to right, #f97316, #ef4444);
+  color: white;
+  padding: 0.75rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  border-radius: 0.5rem;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.login-button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
+}
+
+.signup-text {
+  text-align: center;
+  margin-top: 2rem;
+  color: #6b7280;
+}
+
+.signup-text button {
+  background: linear-gradient(to right, #14b8a6, #06b6d4);
+  color: white;
+  padding: 0.75rem 2rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.signup-text button:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+}

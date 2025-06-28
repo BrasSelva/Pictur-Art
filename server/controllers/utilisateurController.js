@@ -8,12 +8,13 @@ exports.creerUtilisateur = async (req, res) => {
       return res.status(400).json({ message: "Tous les champs sont requis." });
     }
 
+    //Création de l'utilisateur
     const nouvelUtilisateur = new Utilisateur({ nom, email, mot_de_passe });
     await nouvelUtilisateur.save();
 
-    res.status(201).json({ message: "Utilisateur créé", utilisateur: nouvelUtilisateur });
+    res.status(201).json({ message: "Utilisateur créé avec succès" });
+
   } catch (error) {
-    console.error("Erreur :", error);
-    res.status(500).json({ message: "Erreur serveur", error: error.message });
+    res.status(500).json({ message: "Erreur serveur", error });
   }
 };
