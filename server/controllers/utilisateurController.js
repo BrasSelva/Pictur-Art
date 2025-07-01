@@ -8,12 +8,15 @@ exports.creerUtilisateur = async (req, res) => {
       return res.status(400).json({ message: "Tous les champs sont requis." });
     }
 
+    const emailDejaExistant = await Utilisateur.findOne({ email });
     if (emailDejaExistant) {
       return res.status(409).json({ message: "Email déjà utilisé" });
     }
 
     //Création de l'utilisateur
     const nouvelUtilisateur = new Utilisateur({ nom, email, mot_de_passe });
+    console.log("nouvelUtilisateur:",nouvelUtilisateur);
+    
     await nouvelUtilisateur.save();
 
     res.status(201).json({ message: "Utilisateur créé avec succès" });
