@@ -112,21 +112,21 @@
   align-items: center;
   min-height: 400px;
   padding-right: 0;
-  margin-right: -60px;
+  margin-right: -180px;
   position: absolute;
   right: 0;
-  top: 50%;
+  top: 55%;
   transform: translateY(-50%);
 }
 
 .image-section img {
-  max-width: 750px;
+  /* max-width: 750px; */
   max-height: 750px;
-  width: 100%;
-  height: auto;
+  width: auto;
+  height: 80vh;
   object-fit: contain;
   filter: saturate(1.6);
-  margin-right: -20px;
+  /* margin-right: -20px; */
 }
 
 
