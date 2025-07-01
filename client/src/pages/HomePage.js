@@ -33,7 +33,7 @@ function HomePage() {
         </section>
 
         <section className="image-section">
-          <img src="img/logo2.png" alt="Image de l'application Pictur'Art" />
+          <img src="img/accueil_picturart.png" alt="Image de l'application Pictur'Art" />
         </section>
       </main>
     </div>
