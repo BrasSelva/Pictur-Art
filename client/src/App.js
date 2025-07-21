@@ -3,7 +3,9 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/login-register/LoginPage';
 import RegisterPage from './pages/login-register/RegisterPage';
-import MotDePasseOublie from './pages/login-register/motDePasseOublie';
+import MotDePasseOublie from './pages/login-register/MotDePasseOublie';
+import Temporaire from './pages/login-register/Temporaire';
+import NouveauMotDePasse from './pages/login-register/NouveauMotDePasse';
 
 function App() {
   return (
@@ -13,6 +15,9 @@ function App() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
+        <Route path="/codeTemporaire" element={<Temporaire />} />
+        <Route path="/nouveau-mot-de-passe" element={<NouveauMotDePasse />} />
+
       </Routes>
     </Router>
   );

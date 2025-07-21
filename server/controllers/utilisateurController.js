@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 require('dotenv').config();  
 const Utilisateur = require('../models/Utilisateur');
 const nodemailer = require('nodemailer');
+const CodeTemporaire = require('../models/CodeTemporaire'); 
 
 const SECRET_KEY = process.env.JWT_SECRET;
 if (!SECRET_KEY) {
@@ -82,70 +83,118 @@ exports.motDePasseOublie = async (req, res) => {
   const { email } = req.body;
 
   if (!email) {
-    return res.status(400).json({ message: "Email requis." });
+    return res.status(400).json({ success: false, message: "Email requis." });
   }
 
   try {
     const utilisateur = await Utilisateur.findOne({ email });
 
     if (!utilisateur) {
-      // Pour la sécurité, on envoie quand même un message neutre
-      return res.status(200).json({ message: "Si cet email existe, un nouveau mot de passe a été envoyé." });
+      return res.status(200).json({ success: false, message: "Aucun compte trouvé avec cet email." });
     }
 
-    // Générer un mot de passe aléatoire
-    const nouveauMotDePasse = genererMotDePasse(10);
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const expireAt = new Date(Date.now() + 15 * 60 * 1000);
 
-    // Hasher le mot de passe
-    const motDePasseHash = await bcrypt.hash(nouveauMotDePasse, 10);
+    await CodeTemporaire.create({ email, code, expireAt });
+    await envoyerEmailCode(email, code, utilisateur.nom);
 
-    // Sauvegarder
-    utilisateur.mot_de_passe = motDePasseHash;
+    res.status(200).json({ success: true, message: "Code envoyé à votre adresse email." });
+  } catch (error) {
+    console.error("Erreur lors de la génération du code :", error);
+    res.status(500).json({ success: false, message: "Erreur serveur", error });
+  }
+};
+
+
+exports.changerMotDePasse = async (req, res) => {
+  const { email, code, nouveauMotDePasse } = req.body;
+  console.log("changerMotDePasse body:", req.body);
+  if (!email || !code || !nouveauMotDePasse) {
+    return res.status(400).json({ message: "Tous les champs sont requis." });
+  }
+
+  try {
+    const record = await CodeTemporaire.findOne({ email, code });
+
+    if (!record) {
+      return res.status(400).json({ message: "Code invalide ou expiré." });
+    }
+
+    const utilisateur = await Utilisateur.findOne({ email });
+    if (!utilisateur) {
+      return res.status(404).json({ message: "Utilisateur introuvable." });
+    }
+
+    utilisateur.mot_de_passe = nouveauMotDePasse;
     await utilisateur.save();
 
-    // Envoyer l'email
-    await envoyerEmail(utilisateur.email, nouveauMotDePasse, utilisateur.nom);
+    await CodeTemporaire.deleteOne({ _id: record._id });
 
-    res.status(200).json({ message: "Si cet email existe, un nouveau mot de passe a été envoyé." });
+    res.status(200).json({ message: "Mot de passe mis à jour avec succès." });
   } catch (error) {
-    console.error("Erreur lors du reset de mot de passe :", error);
+    console.error("Erreur lors de la mise à jour du mot de passe :", error);
     res.status(500).json({ message: "Erreur serveur", error });
   }
 };
 
-// Générateur de mot de passe
-function genererMotDePasse(longueur) {
-  const caracteres = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
-  let mdp = '';
-  for (let i = 0; i < longueur; i++) {
-    mdp += caracteres.charAt(Math.floor(Math.random() * caracteres.length));
-  }
-  return mdp;
-}
+
 
 // Envoi d'email
-async function envoyerEmail(email, nouveauMotDePasse, nom) {
-  // Configure ton transporter (ex: Gmail, mailtrap, etc.)
-  let transporter = nodemailer.createTransport({
-    service: 'Gmail', // ou smtp...
+async function envoyerEmailCode(email, code, nom) {
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: parseInt(process.env.EMAIL_PORT),
     auth: {
-      user: process.env.EMAIL_USER, 
+      user: process.env.EMAIL_USER,
       pass: process.env.EMAIL_PASS,
     },
   });
 
-  const messageHtml = `
+  const html = `
     <h2>Bonjour ${nom},</h2>
-    <p>Voici votre nouveau mot de passe temporaire :</p>
-    <div style="font-size: 20px; font-weight: bold; color: #4f46e5; margin: 10px 0;">${nouveauMotDePasse}</div>
-    <p>Pensez à le changer dès votre prochaine connexion !</p>
+    <p>Voici votre <strong>code temporaire</strong> pour réinitialiser votre mot de passe :</p>
+    <div style="font-size: 24px; font-weight: bold; color: #4f46e5;">${code}</div>
+    <p>Ce code est valable 15 minutes.</p>
     <p>Merci d'utiliser Pictur'Art ✨</p>
   `;
 
   await transporter.sendMail({
-    from: '"Pictur\'Art" <${process.env.EMAIL_USER}>',
+    from: `"Pictur'Art" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: '🔒 Nouveau mot de passe Pictur\'Art',
-    html: messageHtml,
+    subject: '🔐 Votre code de réinitialisation',
+    html
   });
 }
+
+
+exports.verifierCode = async (req, res) => {
+  const { email, code } = req.body;
+
+  if (!email || !code) {
+    return res.status(400).json({ success: false, message: "Email et code requis." });
+  }
+
+  try {
+    const CodeTemporaire = require('../models/CodeTemporaire');
+
+    const record = await CodeTemporaire.findOne({ email, code })
+      .sort({ expireAt: -1 });
+
+    if (!record) {
+      return res.status(400).json({ success: false, message: "Code invalide." });
+    }
+
+    const now = new Date();
+    if (record.expireAt < now) {
+      return res.status(400).json({ success: false, message: "Code expiré." });
+    }
+
+    // ❌ NE PAS supprimer ici
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+    console.error("Erreur lors de la vérification du code :", error);
+    return res.status(500).json({ success: false, message: "Erreur serveur" });
+  }
+};

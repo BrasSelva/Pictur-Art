@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../assets/css/LoginPage.css'; 
-import api from '../../api/api'; // adapte le chemin si besoin
+import api from '../../api/api';
 
 function MotDePasseOublie() {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -12,11 +14,21 @@ function MotDePasseOublie() {
 
     try {
       const response = await api.post('/utilisateurs/mot-de-passe-oublie', { email });
-      setMessage(response.data.message || 'Si cet email existe, un lien vous a été envoyé.');
+
+      if (response.data.success) {
+        setMessage(response.data.message);
+        setTimeout(() => {
+          navigate('/codeTemporaire', { state: { email } });
+        }, 3000);
+      } else {
+        setMessage(response.data.message || "Adresse introuvable.");
+      }
     } catch (error) {
       console.error('Erreur lors de la demande de réinitialisation :', error);
       setMessage('Une erreur est survenue, veuillez réessayer plus tard.');
     }
+
+
   };
 
   return (
