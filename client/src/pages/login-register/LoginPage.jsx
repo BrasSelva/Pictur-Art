@@ -32,7 +32,7 @@ function LoginPage() {
 
         // Optionnel : tu peux utiliser response.data si tu veux
         setTimeout(() => {
-          navigate('/album', { state: { successMessage: "Vous êtes connecté !" } });
+          navigate('/albumPage', { state: { successMessage: "Vous êtes connecté !" } });
         }, 1000);
       } catch (error) {
         console.error("Erreur lors de la tentative de connexion:", error);
@@ -98,7 +98,7 @@ function LoginPage() {
           <button type="submit" className="login-button">
             Connexion
           </button>
-          <Link to="/mot-de-passe-oublie" className='text-center'><p>mot de passe oublié</p></Link>
+          <Link to="/mot-de-passe-oublie" className='text-center'><p>Mot de passe oublié</p></Link>
           
 
           <div className="signup-text">

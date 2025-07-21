@@ -1,8 +1,22 @@
-function AlbumPage(){
-    return (
-        <div>
-            <h1>Album Page</h1>
-        </div>
-    )
-}
-export default AlbumPage;
+// Navbar.jsx
+import React from 'react';
+import '../../assets/css/AlbumPage.css';
+import { Link } from 'react-router-dom';
+
+const Navbar = ({ activeLink = "Mes Albums" }) => {
+  return (
+    <>
+
+    
+
+
+
+    </>
+        
+
+    
+
+  );
+};
+
+export default Navbar;
