@@ -1,18 +1,49 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../../assets/css/LoginPage.css'; 
+import api from '../../api/api'; 
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState('');
   const location = useLocation();
+  const navigate = useNavigate();
   const successMessage = location.state?.successMessage;
 
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Connexion :', { email, password });
-  };
+    setMessage('');
+
+    try {
+        const response = await api.post('/utilisateurs/login', {
+          email,
+          mot_de_passe: password,  // important, car backend attend mot_de_passe
+        });
+
+        // Récupérer le token
+        const token = response.data.token;
+
+        // Stocker dans localStorage
+        localStorage.setItem('token', token);
+
+        // Optionnel : tu peux utiliser response.data si tu veux
+        setTimeout(() => {
+          navigate('/album', { state: { successMessage: "Vous êtes connecté !" } });
+        }, 1000);
+      } catch (error) {
+        console.error("Erreur lors de la tentative de connexion:", error);
+
+        if (error.response && error.response.status === 401) {
+          setMessage("Email ou mot de passe incorrect.");
+        } else {
+          setMessage("Une erreur est survenue lors de la connexion.");
+        }
+      }
+    };
 
   return (
     <div className="login-container">
@@ -59,11 +90,16 @@ function LoginPage() {
               onClick={() => setShowPassword(!showPassword)}
             >
             </button>
+              <span className="eye-icon" onClick={() => setShowPassword(!showPassword)}>
+                {showPassword ? <FaEye /> : <FaEyeSlash />}
+              </span>
           </div>
 
           <button type="submit" className="login-button">
             Connexion
           </button>
+          <Link to="/mot-de-passe-oublie" className='text-center'><p>mot de passe oublié</p></Link>
+          
 
           <div className="signup-text">
             <p>Vous n'avez pas de compte ?</p>
