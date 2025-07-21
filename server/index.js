@@ -5,6 +5,7 @@ const cors = require('cors');
 
 const utilisateurRoutes = require('./routes/utilisateurRoutes');
 const albumRoutes = require('./routes/albumRoutes');
+const mediaRoutes = require('./routes/mediaRoutes');
 
 dotenv.config();
 const app = express();
@@ -19,12 +20,14 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log(" Connecté à MongoDB"))
 .catch((err) => console.error(" Erreur MongoDB :", err));
 
-
-// Utilisation des routes
 app.use('/api/utilisateurs', utilisateurRoutes);
 app.use('/api/albums', albumRoutes);
 
-// Lancement du serveur
+app.use('/api/medias', mediaRoutes);
+
+app.use('/uploads', express.static('uploads'));
+
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Serveur lancé sur le port ${PORT}`);
