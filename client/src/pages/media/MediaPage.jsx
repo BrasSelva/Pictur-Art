@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../api/api';
+import UploadMedia from '../../components//media/UploadMedia';
+import { getToken } from '../../utils/auth';
 import { FaUserCircle, FaLock, FaCommentDots } from 'react-icons/fa';
 import '../../assets/css/MediaPage.css';
 
@@ -9,21 +11,31 @@ function MediaPage() {
   const [medias, setMedias] = useState([]);
   const [selectedImage, setSelectedImage] = useState(null);
 
-  useEffect(() => {
-    const fetchMedias = async () => {
-      try {
-        const res = await api.get(`/medias/album/${id_album}`);
-        setMedias(res.data);
-      } catch (err) {
-        console.error('Erreur chargement médias:', err);
-      }
-    };
+  const fetchMedias = async () => {
+    try {
+      const token = getToken();
+      if (!token) throw new Error('Non connecté');
+      const res = await api.get(`/medias/album/${id_album}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setMedias(res.data);
+    } catch (err) {
+      console.error('Erreur chargement médias:', err);
+    }
+  };
 
+  useEffect(() => {
     fetchMedias();
   }, [id_album]);
 
+  const handleUploadSuccess = (nouveauMedia) => {
+    setMedias((prev) => [nouveauMedia, ...prev]);
+  };
+
   return (
     <>
+      <UploadMedia id_album={id_album} onUploadSuccess={handleUploadSuccess} />
+
       <div className="media-grid">
         {medias.map((media) => (
           <div key={media._id} className="media-card">
