@@ -4,11 +4,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 
 const utilisateurRoutes = require('./routes/utilisateurRoutes');
-<<<<<<< HEAD
 const albumRoutes = require('./routes/albumRoutes');
-=======
 const mediaRoutes = require('./routes/mediaRoutes');
->>>>>>> media
 
 dotenv.config();
 const app = express();
