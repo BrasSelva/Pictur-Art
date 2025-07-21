@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const SECRET_KEY = process.env.JWT_SECRET || 'ma_super_cle_secrete';
 
 module.exports = (req, res, next) => {
-  const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; // format "Bearer token"
+  const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; // "Bearer token"
 
   if (!token) {
     return res.status(401).json({ message: "Accès refusé. Token manquant." });
