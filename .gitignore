@@ -1,6 +1,8 @@
 # Fichiers de dépendances
 client/node_modules/
 server/node_modules/
+node_modules/
+server/uploads/
 /.pnp
 .pnp.js
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import '../../assets/css/LoginPage.css'; 
-import api from '../../api/api'; // adapte le chemin si besoin
+import api from '../../api/api'; 
 
 function MotDePasseOublie() {
   const [email, setEmail] = useState('');

@@ -1,0 +1,33 @@
+.album-container {
+  padding: 2rem;
+}
+
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.5rem;
+}
+
+.album-card {
+  background: #f3f3f3;
+  border-radius: 10px;
+  padding: 0.5rem;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+.image-placeholder {
+  background-color: #ccc;
+  height: 140px;
+  border-radius: 8px;
+}
+
+.album-name {
+  font-weight: bold;
+  margin-top: 0.5rem;
+}
+
+.album-date {
+  font-size: 0.85rem;
+  color: #666;
+}
