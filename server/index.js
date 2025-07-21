@@ -25,6 +25,9 @@ app.use('/api/albums', albumRoutes);
 
 app.use('/api/medias', mediaRoutes);
 
+const reactionRoutes = require('./routes/reactionRoutes');
+app.use('/api/reactions', reactionRoutes);
+
 app.use('/uploads', express.static('uploads'));
 
 
