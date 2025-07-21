@@ -6,6 +6,8 @@ const cors = require('cors');
 const utilisateurRoutes = require('./routes/utilisateurRoutes');
 const albumRoutes = require('./routes/albumRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
+const reactionRoutes = require('./routes/reactionRoutes');
+const commentaireRoutes = require('./routes/commentaireRoutes');
 
 dotenv.config();
 const app = express();
@@ -25,8 +27,9 @@ app.use('/api/albums', albumRoutes);
 
 app.use('/api/medias', mediaRoutes);
 
-const reactionRoutes = require('./routes/reactionRoutes');
 app.use('/api/reactions', reactionRoutes);
+
+app.use('/api/commentaires', commentaireRoutes);
 
 app.use('/uploads', express.static('uploads'));
 
