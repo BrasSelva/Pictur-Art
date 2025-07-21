@@ -1,77 +1,33 @@
-/* Navbar.css */
-.header {
-  background-color: white;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
-  border-bottom: 1px solid #e5e7eb;
+.album-container {
+  padding: 2rem;
 }
 
-.header-content {
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: 0 1rem;
+.albums-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 1.5rem;
 }
 
-.header-nav {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  height: 4rem;
+.album-card {
+  background: #f3f3f3;
+  border-radius: 10px;
+  padding: 0.5rem;
+  text-align: center;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
 }
 
-.logo {
-  flex-shrink: 0;
+.image-placeholder {
+  background-color: #ccc;
+  height: 140px;
+  border-radius: 8px;
 }
 
-.logo h1 {
-  font-size: 1.5rem;
+.album-name {
   font-weight: bold;
-  margin: 0;
+  margin-top: 0.5rem;
 }
 
-.logo-pictur {
-  color: #0d9488;
-}
-
-.logo-art {
-  color: #f97316;
-}
-
-.nav-links {
-  display: none;
-  gap: 2rem;
-}
-
-.nav-link {
-  color: #6b7280;
-  text-decoration: none;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition: color 0.2s;
-}
-
-.nav-link:hover {
-  color: #374151;
-}
-
-.nav-link.active {
-  color: #111827;
-  border-bottom: 2px solid #f97316;
-}
-
-/* Responsive Design */
-@media (min-width: 768px) {
-  .nav-links {
-    display: flex;
-  }
-  
-  .header-content {
-    padding: 0 1.5rem;
-  }
-}
-
-@media (min-width: 1024px) {
-  .header-content {
-    padding: 0 2rem;
-  }
+.album-date {
+  font-size: 0.85rem;
+  color: #666;
 }
