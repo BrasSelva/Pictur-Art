@@ -8,6 +8,7 @@ import AlbumPage from './pages/album/AlbumPage';
 import ProfilagePage from './pages/ProfilPage';
 import LayoutConnecte from './components/LayoutConnecte';
 import PrivateRoute from './components/PrivateRoute';
+import AppRouter from './services/router';
 
 function App() {
   return (
@@ -51,6 +52,7 @@ function App() {
           }
         />
       </Routes>
+      <AppRouter />
     </Router>
   );
 }
