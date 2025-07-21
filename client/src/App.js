@@ -1,57 +1,10 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import HomePage from './pages/HomePage';
-import LoginPage from './pages/login-register/LoginPage';
-import RegisterPage from './pages/login-register/RegisterPage';
-import MotDePasseOublie from './pages/login-register/motDePasseOublie';
-import AlbumPage from './pages/album/AlbumPage';
-import ProfilagePage from './pages/ProfilPage';
-import LayoutConnecte from './components/LayoutConnecte';
-import PrivateRoute from './components/PrivateRoute';
+import { BrowserRouter as Router } from 'react-router-dom';
 import AppRouter from './services/router';
 
 function App() {
   return (
     <Router>
-      <Routes>
-        {/* Routes publiques */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
-
-        {/* Routes protégées  */}
-        <Route
-          path="/albumPage"
-          element={
-            <PrivateRoute>
-              <LayoutConnecte>
-                <AlbumPage />
-              </LayoutConnecte>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/album"
-          element={
-            <PrivateRoute>
-              <LayoutConnecte>
-                <AlbumPage />
-              </LayoutConnecte>
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/profilagePage"
-          element={
-            <PrivateRoute>
-              <LayoutConnecte>
-                <ProfilagePage />
-              </LayoutConnecte>
-            </PrivateRoute>
-          }
-        />
-      </Routes>
       <AppRouter />
     </Router>
   );
