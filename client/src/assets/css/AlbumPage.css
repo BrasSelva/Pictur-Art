@@ -1,33 +1,87 @@
 .album-container {
-  padding: 2rem;
+  padding: 2rem 4rem;
+  background-color: #fff;
+}
+
+.album-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 2rem;
+}
+
+.album-header h2 {
+  font-size: 2rem;
+  font-weight: bold;
+  color: #000;
+  margin: 0;
+}
+
+.album-create {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.album-create button {
+  background-color: #e35c2d;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.album-create button:hover {
+  background-color: #cf3d0d;
 }
 
 .albums-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
 }
 
 .album-card {
-  background: #f3f3f3;
-  border-radius: 10px;
-  padding: 0.5rem;
+  background: #eee;
+  border-radius: 12px;
+  padding: 1rem;
   text-align: center;
-  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.album-card:hover {
+  transform: translateY(-4px);
 }
 
 .image-placeholder {
   background-color: #ccc;
-  height: 140px;
+  height: 180px;
   border-radius: 8px;
+  margin-bottom: 0.8rem;
 }
 
 .album-name {
-  font-weight: bold;
-  margin-top: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  margin: 0.3rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
 }
 
 .album-date {
-  font-size: 0.85rem;
-  color: #666;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.album-error {
+  color: red;
+  margin-top: 0.5rem;
 }
