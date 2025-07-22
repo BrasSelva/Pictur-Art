@@ -45,7 +45,7 @@ function AlbumPage() {
       <div className="album-header">
         <h2>Mes Albums</h2>
         <div className="album-create">
-            <button onClick={() => navigate('/createAlbum')}>Créer un album privé</button>
+          <button onClick={() => navigate('/createAlbum')}>Créer un album privé</button>
         </div>
       </div>
 
@@ -57,14 +57,27 @@ function AlbumPage() {
         <div className="albums-grid">
           {albums.map((album) => (
             <div key={album._id} className="album-card">
-              <div className="image-placeholder"></div>
+              {album.image ? (
+                <img
+                  src={`http://localhost:5000/uploads/${album.image}`}
+                  alt="Couverture"
+                  className="album-cover"
+                />
+              ) : (
+                <div className="image-placeholder"></div>
+              )}
+
               <p className="album-name">🔒 <strong>{album.nom}</strong></p>
               <p className="album-date">{formatDate(album.date_creation)}</p>
+
+            
             </div>
           ))}
+
         </div>
       )}
     </div>
+
   );
 }
 
