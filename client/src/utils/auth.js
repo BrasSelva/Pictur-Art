@@ -5,7 +5,7 @@ export function getUserIdFromToken() {
   if (!token) return null;
   try {
     const decoded = jwtDecode(token);
-    return decoded.id;
+    return decoded.id ? String(decoded.id) : null;
   } catch {
     return null;
   }
