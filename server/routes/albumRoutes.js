@@ -7,12 +7,16 @@ const upload = require('../middlewares/multer');
 // GET /albums
 router.get('/', verifyToken, async (req, res) => {
   try {
-    const albums = await Album.find({ id_utilisateur: req.utilisateur.id }).sort({ date_creation: -1 });
+    const albums = await Album.find({ id_utilisateur: req.utilisateur.id })
+      .sort({ date_creation: -1 })
+      .populate('id_utilisateur', 'nom');
+
     res.json(albums);
   } catch (error) {
     res.status(500).json({ message: 'Erreur serveur' });
   }
 });
+
 
 // POST /albums — avec image facultative
 router.post('/', verifyToken, upload.single('couverture'), async (req, res) => {
@@ -52,6 +56,28 @@ router.delete('/:id', verifyToken, async (req, res) => {
     res.status(500).json({ message: "Erreur lors de la suppression de l'album." });
   }
 });
+  
+// Modifier la photo de couverture
+router.patch('/:id/couverture', verifyToken, upload.single('couverture'), async (req, res) => {
+  try {
+    const album = await Album.findOne({ _id: req.params.id, id_utilisateur: req.utilisateur.id });
+
+    if (!album) {
+      return res.status(404).json({ message: 'Album introuvable ou non autorisé.' });
+    }
+
+    if (req.file) {
+      album.image = req.file.filename;
+      await album.save();
+    }
+
+    res.json({ message: 'Couverture mise à jour avec succès.', album });
+  } catch (error) {
+    console.error('Erreur modification couverture :', error);
+    res.status(500).json({ message: 'Erreur serveur.' });
+  }
+});
+
 
 
 module.exports = router;

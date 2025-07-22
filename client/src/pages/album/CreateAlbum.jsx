@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import api from '../../api/api';
 import '../../assets/css/CreateAlbum.css';
+import { apiForm } from '../../api/api';
 
 const CreateAlbumPage = () => {
   const [coverFile, setCoverFile] = useState(null);
@@ -16,17 +16,18 @@ const CreateAlbumPage = () => {
       return;
     }
 
+    if (!coverFile) {
+      setError("Veuillez sélectionner une image de couverture.");
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append('nom', albumName);
       formData.append('date_creation', new Date().toISOString());
-      if (coverFile) {
-        formData.append('couverture', coverFile);
-      }
+      formData.append('couverture', coverFile);
 
-      await api.post('/albums', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await apiForm.post('/albums', formData);
 
       navigate('/albumPage');
     } catch (err) {
@@ -40,14 +41,12 @@ const CreateAlbumPage = () => {
     setPreviewUrl(null);
   };
 
-
   return (
     <div className="create-album-container">
       <div className="create-album-wrapper">
         <h1 className="page-title">Créer un album</h1>
 
         <div className="content-wrapper">
-          {/* Nom de l'album */}
           <div className="album-name-section">
             <label htmlFor="album-name" className="album-name-label">
               Nom de l'album :
@@ -78,7 +77,11 @@ const CreateAlbumPage = () => {
                 ) : (
                   <div className="cover-preview-wrapper">
                     <img src={previewUrl} alt="Aperçu couverture" className="cover-preview-image" />
-                    <button type="button" className="remove-cover-button" onClick={removeCover}>❌</button>
+                    <button type="button" className="remove-cover-button" onClick={removeCover}>
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF3B30" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M18.3 5.71a1 1 0 00-1.42 0L12 10.59 7.11 5.7A1 1 0 105.7 7.11L10.59 12l-4.89 4.89a1 1 0 101.41 1.41L12 13.41l4.89 4.89a1 1 0 001.41-1.41L13.41 12l4.89-4.89a1 1 0 000-1.4z" />
+                      </svg>
+                    </button>
                   </div>
                 )}
               </div>
@@ -96,7 +99,6 @@ const CreateAlbumPage = () => {
               }}
             />
 
-            {/* Bloc invitation */}
             <div className="invite-section">
               <div className="invite-content">
                 <h3 className="invite-title">Inviter des amis</h3>

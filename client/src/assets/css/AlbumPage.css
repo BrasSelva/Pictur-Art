@@ -1,112 +1,298 @@
+/* Container principal */
 .album-container {
-  padding: 2rem 4rem;
-  background-color: #fff;
+  padding: 2rem;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Header */
 .album-header {
+  max-width: 1400px;
+  margin: 0 auto 2rem auto;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.page-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.create-album-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #de733c 0%, #d97f52 100%);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+}
+
+.create-album-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+  background: linear-gradient(135deg, #de733c 0%, #d97f52 100%);
+}
+
+.btn-icon {
+  font-size: 1.2rem;
+}
+
+.error-message {
+  max-width: 1400px;
+  margin: 0 auto 2rem auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
+  gap: 0.75rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+  border: 1px solid #fca5a5;
+  border-radius: 12px;
+  color: #dc2626;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(220, 38, 38, 0.1);
+}
+
+.error-icon {
+  font-size: 1.5rem;
+}
+
+/* État vide */
+.empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.empty-icon {
+  font-size: 5rem;
+  margin-bottom: 1.5rem;
+  opacity: 0.6;
+}
+
+.empty-title {
+  font-size: 1.75rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.empty-description {
+  color: #6b7280;
+  font-size: 1.1rem;
   margin-bottom: 2rem;
 }
 
-.album-header h2 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #000;
-  margin: 0;
-}
-
-.album-create {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-}
-
-.album-create button {
-  background-color: #e35c2d;
+.empty-cta-btn {
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border: none;
-  border-radius: 8px;
-  padding: 0.6rem 1.2rem;
+  border-radius: 50px;
+  font-weight: 600;
+  font-size: 1.1rem;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: background-color 0.2s ease;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
 }
 
-.album-create button:hover {
-  background-color: #cf3d0d;
+.empty-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
 }
 
 .albums-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
+
 .album-card {
-  background: #eee;
-  border-radius: 12px;
-  padding: 1rem;
-  text-align: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  transition: transform 0.2s ease;
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
 }
 
 .album-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
-.image-placeholder {
-  background-color: #ccc;
-  height: 180px;
-  border-radius: 8px;
-  margin-bottom: 0.8rem;
-}
-
-.album-name {
-  font-weight: 600;
-  font-size: 1rem;
-  margin: 0.3rem 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.4rem;
-}
-
-.album-date {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.album-error {
-  color: red;
-  margin-top: 0.5rem;
+.album-cover-container {
+  position: relative;
+  height: 200px;
+  overflow: hidden;
 }
 
 .album-cover {
   width: 100%;
-  height: 180px;
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
-  margin-bottom: 0.8rem;
+  transition: transform 0.3s ease;
 }
 
-.delete-button {
-  margin-top: 10px;
-  background-color: #e74c3c;
+.album-card:hover .album-cover {
+  transform: scale(1.1);
+}
+
+.image-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.placeholder-icon {
+  font-size: 3rem;
   color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 8px;
-  cursor: pointer;
+  opacity: 0.8;
+}
+
+.lock-overlay {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(8px);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.lock-icon {
+  color: white;
+  font-size: 1.1rem;
+}
+
+.album-content {
+  padding: 1.5rem;
+}
+
+.album-name {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 1rem 0;
+  line-height: 1.3;
+  transition: color 0.3s ease;
+}
+
+.album-card:hover .album-name {
+  color: #667eea;
+}
+
+.album-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.album-date,
+.album-author {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #6b7280;
   font-size: 0.9rem;
-  transition: background-color 0.2s ease;
 }
 
-.delete-button:hover {
-  background-color: #c0392b;
+.detail-icon {
+  font-size: 1rem;
+  opacity: 0.7;
 }
 
+.album-footer {
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.private-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.8rem;
+  background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+  color: #1d4ed8;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.badge-icon {
+  font-size: 0.8rem;
+}
+
+@media (max-width: 768px) {
+  .album-container {
+    padding: 1rem;
+  }
+  
+  .page-title {
+    font-size: 2rem;
+  }
+  
+  .header-content {
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+  }
+  
+  .albums-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  .album-cover-container {
+    height: 180px;
+  }
+}
+
+@media (max-width: 480px) {
+  .album-container {
+    padding: 0.5rem;
+  }
+  
+  .page-title {
+    font-size: 1.75rem;
+  }
+  
+  .create-album-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .album-content {
+    padding: 1rem;
+  }
+}
