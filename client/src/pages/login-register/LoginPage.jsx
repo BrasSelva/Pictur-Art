@@ -23,12 +23,15 @@ function LoginPage() {
           email,
           mot_de_passe: password,  // important, car backend attend mot_de_passe
         });
-
-        // Récupérer le token
-        const token = response.data.token;
+        
+        const user = {
+          nom: response.data.utilisateur.nom,
+          email: response.data.utilisateur.email,
+          token: response.data.token
+        };
 
         // Stocker dans localStorage
-        localStorage.setItem('token', token);
+        localStorage.setItem('user', JSON.stringify(user));
 
         // Optionnel : tu peux utiliser response.data si tu veux
         setTimeout(() => {
