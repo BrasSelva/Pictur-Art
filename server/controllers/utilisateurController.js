@@ -190,7 +190,6 @@ exports.verifierCode = async (req, res) => {
       return res.status(400).json({ success: false, message: "Code expiré." });
     }
 
-    // ❌ NE PAS supprimer ici
     return res.status(200).json({ success: true });
 
   } catch (error) {
@@ -198,3 +197,50 @@ exports.verifierCode = async (req, res) => {
     return res.status(500).json({ success: false, message: "Erreur serveur" });
   }
 };
+
+// PUT /api/utilisateurs/modifier
+exports.modifierProfil = async (req, res) => {
+  const { nom, ancienMotDePasse, nouveauMotDePasse, confirmation, email } = req.body;
+
+  try {
+    const utilisateur = await Utilisateur.findOne({ email });
+    
+    if (!utilisateur) {
+      return res.status(404).json({ message: "Utilisateur introuvable." });
+    }
+
+    if (!nom.trim()) {
+      return res.status(400).json({ message: "Le pseudo est requis." });
+    }
+
+    utilisateur.nom = nom;
+    console.log("ancienMotDePasse:",ancienMotDePasse,"\nnouveauMotDePasse:",nouveauMotDePasse,"\nconfirmation:",confirmation);
+
+    // Si modification du mot de passe
+    if (ancienMotDePasse || nouveauMotDePasse || confirmation) {
+      if (!ancienMotDePasse || !nouveauMotDePasse || !confirmation) {
+        return res.status(400).json({ message: "Tous les champs du mot de passe doivent être remplis." });
+      }
+
+      const passwordOk = await bcrypt.compare(ancienMotDePasse, utilisateur.mot_de_passe);
+      console.log('\npasswordOk:',passwordOk);
+      
+      if (!passwordOk) {
+        return res.status(401).json({ message: "Ancien mot de passe incorrect." });
+      }
+
+      if (nouveauMotDePasse !== confirmation) {
+        return res.status(400).json({ message: "Les nouveaux mots de passe ne correspondent pas." });
+      }
+
+      utilisateur.mot_de_passe = nouveauMotDePasse;
+    }
+
+    await utilisateur.save();
+    res.status(200).json({ message: "Profil mis à jour avec succès." });
+  } catch (error) {
+    console.error("Erreur modification profil :", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+

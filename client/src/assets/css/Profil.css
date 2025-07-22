@@ -1,0 +1,63 @@
+/* Profil.css */
+
+.profil-container {
+  max-width: 500px;
+  margin: 4rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.profil-container h2 {
+  font-size: 2rem;
+  text-align: center;
+  color: #4f46e5;
+  margin-bottom: 1.5rem;
+}
+
+.profil-container form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.profil-container input {
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+}
+
+.profil-container input:read-only {
+  background-color: #f9fafb;
+  color: #6b7280;
+}
+
+.profil-container button {
+  background-color: #4f46e5;
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.profil-container button:hover {
+  background-color: #4338ca;
+}
+
+.profil-container .erreur {
+  color: #dc2626;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.profil-container .message {
+  color: #16a34a;
+  font-size: 0.9rem;
+  text-align: center;
+}

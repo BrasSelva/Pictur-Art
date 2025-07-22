@@ -37,6 +37,11 @@ const NouveauMotDePasse = () => {
     }
 
     try {
+      const mdpRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+      if (!mdpRegex.test(nouveauMotDePasse)) {
+        setMessage("Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule et un chiffre.");
+        return false;
+      } 
       const response = await api.post('/utilisateurs/changerMotDePasse', {
         email,
         code,

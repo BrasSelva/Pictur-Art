@@ -12,6 +12,8 @@ import LayoutConnecte from '../components/LayoutConnecte';
 import PrivateRoute from '../components/PrivateRoute';
 
 import MediaPage from '../pages/media/MediaPage';
+import CodeTemporaire from '../pages/login-register/Temporaire';
+import NouveauMotDePasse from '../pages/login-register/NouveauMotDePasse';
 
 function AppRouter() {
   return (
@@ -21,6 +23,8 @@ function AppRouter() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
+      <Route path="/codeTemporaire" element={<CodeTemporaire />} />
+      <Route path="/nouveau-mot-de-passe" element={<NouveauMotDePasse />} />
 
       {/* Routes protégées */}
       <Route
