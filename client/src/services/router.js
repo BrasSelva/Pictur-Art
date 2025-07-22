@@ -10,8 +10,8 @@ import AlbumPage from '../pages/album/AlbumPage';
 import ProfilagePage from '../pages/ProfilPage';
 import LayoutConnecte from '../components/LayoutConnecte';
 import PrivateRoute from '../components/PrivateRoute';
-
 import MediaPage from '../pages/media/MediaPage';
+import CreateAlbum from '../pages/album/CreateAlbum';
 
 function AppRouter() {
   return (
@@ -54,7 +54,6 @@ function AppRouter() {
         }
       />
 
-      {/* Route media (à protéger si besoin) */}
       <Route
         path="/album/:id_album/medias"
         element={
@@ -65,7 +64,18 @@ function AppRouter() {
             </PrivateRoute>
         }
         />
-    </Routes>
+
+      <Route
+        path="/createAlbum"
+        element={
+          <PrivateRoute>
+            <LayoutConnecte>
+              <CreateAlbum />
+            </LayoutConnecte>   
+          </PrivateRoute>
+        }
+        />
+    </Routes> 
   );
 }
 

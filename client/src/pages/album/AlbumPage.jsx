@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import '../../assets/css/AlbumPage.css';
 import api from '../../api/api';
+import { useNavigate } from 'react-router-dom';
 
 function AlbumPage() {
+  const navigate = useNavigate();
   const [albums, setAlbums] = useState([]);
   const [nouvelAlbum, setNouvelAlbum] = useState('');
   const [erreur, setErreur] = useState('');
@@ -43,7 +45,7 @@ function AlbumPage() {
       <div className="album-header">
         <h2>Mes Albums</h2>
         <div className="album-create">
-            <button onClick={handleCreateAlbum}>Créer un album privé</button>
+            <button onClick={() => navigate('/createAlbum')}>Créer un album privé</button>
         </div>
       </div>
 
