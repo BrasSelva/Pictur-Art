@@ -1,0 +1,40 @@
+.upload-float-button {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: white;
+  font-size: 36px; /* un peu plus grand */
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  
+  display: flex;             /* Flexbox activé */
+  justify-content: center;   /* Centre horizontalement */
+  align-items: center;       /* Centre verticalement */
+  
+  z-index: 1000;
+  transition: background-color 0.3s ease;
+}
+
+.upload-float-button:hover {
+  background-color: #4338ca;
+}
+
+.upload-message {
+  position: fixed;
+  bottom: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #e11d48; /* rouge pour erreur */
+  background: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  font-weight: 600;
+  z-index: 1500;
+}

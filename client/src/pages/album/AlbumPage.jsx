@@ -90,7 +90,12 @@ function AlbumPage() {
       ) : (
         <div className="albums-grid">
           {albums.map((album) => (
-            <div key={album._id} className="album-card">
+            <div
+              key={album._id}
+              className="album-card"
+              onClick={() => navigate(`/album/${album._id}/medias`)}
+              style={{ cursor: 'pointer' }}
+            >
               <div className="album-cover-container">
                 {album.image ? (
                   <img
