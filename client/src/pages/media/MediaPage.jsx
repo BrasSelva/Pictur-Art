@@ -8,6 +8,9 @@ import SearchBar from '../../components/searchbar/SearchBar';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
 
+import InviteModal from '../../pages/media/InviteModal';
+
+
 function MediaPage() {
   const { id_album } = useParams();
   const navigate = useNavigate();
@@ -112,12 +115,12 @@ function MediaPage() {
           </div>
         </header>
 
-      <div className="header-content">
-        <button className="Invite-btn">
-          <span className="btn-icon"></span>
-          Inviter des amis
-        </button>
-      </div>
+        <div className="header-content">
+          <button className="Invite-btn">
+            <span className="btn-icon"></span>
+            <InviteModal albumId={id_album} />
+          </button>
+        </div>
 
         <div className="media-grid">
           {medias

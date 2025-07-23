@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
 const InviteModal = ({ albumId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -6,35 +6,54 @@ const InviteModal = ({ albumId }) => {
   const [message, setMessage] = useState("");
 
   const handleInvite = async () => {
+    setMessage("");
     try {
-      const res = await fetch(`/api/albums/${albumId}/invite`, {
+      const token = localStorage.getItem("token");
+
+      // Étape 1 : récupérer utilisateur par pseudo
+      const userRes = await fetch(`/api/utilisateurs/by-pseudo/${pseudo}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!userRes.ok) {
+        setMessage("Utilisateur introuvable");
+        return;
+      }
+
+      const utilisateur = await userRes.json();
+
+      // Étape 2 : ajouter à l'album
+      const res = await fetch(`/api/membrealbums`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ pseudo }),
+        body: JSON.stringify({
+          id_utilisateur: utilisateur._id,
+          id_album: albumId,
+        }),
       });
+
       const data = await res.json();
       if (res.ok) {
-        setMessage("✅ Invitation envoyée !");
+        setMessage("Invitation envoyée !");
         setPseudo("");
       } else {
-        setMessage(data.message || "❌ Erreur");
+        setMessage(data.message || "Erreur");
       }
     } catch (err) {
-      setMessage("❌ Erreur réseau");
+      setMessage("Erreur réseau");
     }
   };
 
   return (
     <>
       <button
-        className="create-album-btn"
-        style={{ position: "fixed", top: "1rem", right: "1rem" }}
+        className="Invite-btn"
+        style={{ position: "absolute", top: "1rem", right: "1rem" }}
         onClick={() => setIsOpen(true)}
       >
-        <span className="btn-icon"></span>
         Inviter des amis
       </button>
 
@@ -57,5 +76,4 @@ const InviteModal = ({ albumId }) => {
     </>
   );
 };
-
 export default InviteModal;

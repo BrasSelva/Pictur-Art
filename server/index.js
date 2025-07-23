@@ -24,6 +24,8 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch((err) => console.error(" Erreur MongoDB :", err));
 
 app.use('/api/utilisateurs', utilisateurRoutes);
+app.use('/api/utilisateurs', utilisateurRoutes);
+
 
 app.use('/api/albums', albumRoutes);
 
