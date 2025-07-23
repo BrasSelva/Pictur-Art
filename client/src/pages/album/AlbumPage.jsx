@@ -3,11 +3,15 @@ import '../../assets/css/AlbumPage.css';
 import api from '../../api/api';
 import { apiForm } from '../../api/api';
 import { useNavigate } from 'react-router-dom';
+import { getUserIdFromToken } from '../../utils/auth';
+
 
 function AlbumPage() {
   const navigate = useNavigate();
   const [albums, setAlbums] = useState([]);
   const [erreur, setErreur] = useState('');
+  const userIdConnecte = getUserIdFromToken();
+
 
   useEffect(() => {
     fetchAlbums();
@@ -58,14 +62,17 @@ function AlbumPage() {
       <div className="album-header">
         <div className="header-content">
           <h2 className="page-title">Mes Albums</h2>
-          <button
-            className="create-album-btn"
-            onClick={() => navigate('/createAlbum')}
-          >
-            <span className="btn-icon"></span>
-            Créer un album privé
-          </button>
+          {albums.length > 0 && (
+            <button
+              className="create-album-btn"
+              onClick={() => navigate('/createAlbum')}
+            >
+              <span className="btn-icon"></span>
+              Créer un album privé
+            </button>
+          )}
         </div>
+
       </div>
 
       {erreur && (
@@ -127,14 +134,23 @@ function AlbumPage() {
                     <span>{album.id_utilisateur?.nom || 'Inconnu'}</span>
                   </div>
                 </div>
+                {album.id_utilisateur?._id === userIdConnecte && (
+                  <div className="album-footer">
+                    <button
+                      className="private-badge"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleCoverChange(album._id);
+                      }}
+                    >
+                      <span className="badge-icon"></span>
+                      Modifier la couverture
+                    </button>
+                  </div>
+                )}
 
-                <div className="album-footer">
-                  <span className="private-badge">
-                    <span className="badge-icon"></span>
-                     Modifier la couverture
-                  </span>
 
-                </div>
+
               </div>
             </div>
           ))}
