@@ -239,3 +239,37 @@ exports.modifierProfil = async (req, res) => {
   }
 };
 
+exports.contact = async (req, res) => {
+  const { name, email, subject, message } = req.body;
+
+  const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+  const mailOptions = {
+    from: `"PicturArt Contact" <${process.env.EMAIL_USER}>`,
+    to: 'support@picturart.fr',
+    subject: `Demande de contact : ${subject}`,
+    html: `
+      <h3>Nouvelle demande de contact</h3>
+      <p><strong>Nom :</strong> ${name}</p>
+      <p><strong>Email :</strong> ${email}</p>
+      <p><strong>Sujet :</strong> ${subject}</p>
+      <p><strong>Message :</strong><br/>${message}</p>
+    `
+  };
+
+  try {
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Email envoyé avec succès' });
+  } catch (error) {
+    console.error('Erreur envoi email :', error);
+    res.status(500).json({ error: "Échec de l'envoi de l'email" });
+  }
+};
+

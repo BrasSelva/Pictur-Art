@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../../assets/css/LoginPage.css'; 
 import api from '../../api/api'; 
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import Footer from '../../components/footers/Footer';
 
 function LoginPage() {
   const [email, setEmail] = useState('');
@@ -49,7 +50,8 @@ function LoginPage() {
     };
 
   return (
-    <div className="login-container">
+   <div className="login-container">
+    <div className="login-content">
       <div className="left-section">
         <img src="img/logoLogin.png" alt="Logo Pictur'Art" className="logo" />
         <h1>
@@ -111,6 +113,8 @@ function LoginPage() {
         </form>
       </div>
     </div>
+    <Footer />
+  </div>
   );
 }
 
