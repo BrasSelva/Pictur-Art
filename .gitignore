@@ -10,7 +10,7 @@ server/uploads/
 /coverage
 
 # Production
-/build
+/client/build
 /dist
 
 # Systèmes
