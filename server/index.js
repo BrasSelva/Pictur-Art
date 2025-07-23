@@ -6,6 +6,7 @@ const cors = require('cors');
 const utilisateurRoutes = require('./routes/utilisateurRoutes');
 const albumRoutes = require('./routes/albumRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
+const membreAlbumRoutes = require('./routes/membreAlbumRoutes');
 const reactionRoutes = require('./routes/reactionRoutes');
 const commentaireRoutes = require('./routes/commentaireRoutes');
 
@@ -23,6 +24,7 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch((err) => console.error(" Erreur MongoDB :", err));
 
 app.use('/api/utilisateurs', utilisateurRoutes);
+
 app.use('/api/albums', albumRoutes);
 
 app.use('/api/medias', mediaRoutes);
@@ -32,6 +34,8 @@ app.use('/api/reactions', reactionRoutes);
 app.use('/api/commentaires', commentaireRoutes);
 
 app.use('/uploads', express.static('uploads'));
+
+app.use('/api/membrealbums', membreAlbumRoutes);
 
 
 const PORT = process.env.PORT || 5000;

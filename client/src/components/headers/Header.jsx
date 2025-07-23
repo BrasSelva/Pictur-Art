@@ -4,7 +4,6 @@ function Header() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
     localStorage.removeItem('user');
 
     navigate('/');
@@ -13,7 +12,7 @@ function Header() {
   return (
     <header className="header">
       <div className="logo-section">
-        <img src="img/logoPicturArt.png" alt="logo" />
+        <img src="/img/logoPicturArt.png" alt="logo" />
       </div>
 
       <nav className="nav">

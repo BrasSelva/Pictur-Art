@@ -10,8 +10,10 @@ import AlbumPage from '../pages/album/AlbumPage';
 import ProfilagePage from '../pages/ProfilPage';
 import LayoutConnecte from '../components/LayoutConnecte';
 import PrivateRoute from '../components/PrivateRoute';
-
 import MediaPage from '../pages/media/MediaPage';
+import CodeTemporaire from '../pages/login-register/Temporaire';
+import NouveauMotDePasse from '../pages/login-register/NouveauMotDePasse';
+import CreateAlbum from '../pages/album/CreateAlbum';
 
 function AppRouter() {
   return (
@@ -21,6 +23,8 @@ function AppRouter() {
       <Route path="/login" element={<LoginPage />} />
       <Route path="/register" element={<RegisterPage />} />
       <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
+      <Route path="/codeTemporaire" element={<CodeTemporaire />} />
+      <Route path="/nouveau-mot-de-passe" element={<NouveauMotDePasse />} />
 
       {/* Routes protégées */}
       <Route
@@ -54,7 +58,6 @@ function AppRouter() {
         }
       />
 
-      {/* Route media (à protéger si besoin) */}
       <Route
         path="/album/:id_album/medias"
         element={
@@ -65,7 +68,18 @@ function AppRouter() {
             </PrivateRoute>
         }
         />
-    </Routes>
+
+      <Route
+        path="/createAlbum"
+        element={
+          <PrivateRoute>
+            <LayoutConnecte>
+              <CreateAlbum />
+            </LayoutConnecte>   
+          </PrivateRoute>
+        }
+        />
+    </Routes> 
   );
 }
 

@@ -1,0 +1,28 @@
+plugins = []
+headers = []
+redirects = []
+
+[functions]
+
+[functions."*"]
+
+[build]
+publish = "C:\\Users\\Administrateur\\Documents\\Master\\Pictur-Art\\client\\build"
+publishOrigin = "ui"
+commandOrigin = "ui"
+base = "C:\\Users\\Administrateur\\Documents\\Master\\Pictur-Art\\client"
+command = "npm run build"
+
+[build.environment]
+
+[build.processing]
+
+[build.processing.css]
+
+[build.processing.html]
+
+[build.processing.images]
+
+[build.processing.js]
+
+[build.services]
