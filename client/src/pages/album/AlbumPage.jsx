@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import '../../assets/css/AlbumPage.css';
-import api from '../../api/api';
 import { apiForm } from '../../api/api';
+import api from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 
 function AlbumPage() {

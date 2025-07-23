@@ -1,18 +1,14 @@
-// api.js
+//api.js
 import axios from 'axios';
 
-const isLocalhost = window.location.hostname === 'localhost';
-
 const api = axios.create({
-  baseURL: isLocalhost 
-    ? 'http://localhost:5000/api'
-    : 'https://backendpicturart.onrender.com/api',
+  baseURL: 'http://localhost:5000/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Intercepteur pour ajouter le token d'authentification à chaque requête
+// Ajoute le token automatiquement
 api.interceptors.request.use((config) => {
   try {
     const userString = localStorage.getItem('user');
@@ -25,6 +21,11 @@ api.interceptors.request.use((config) => {
     console.warn('Erreur lecture token dans localStorage', error);
   }
   return config;
+});
+
+// Nouvelle instance pour les requêtes FormData
+export const apiForm = axios.create({
+  baseURL: 'http://localhost:5000/api',
 });
 
 // Ajout du token aussi pour apiForm
@@ -41,6 +42,5 @@ apiForm.interceptors.request.use((config) => {
   }
   return config;
 });
-
 
 export default api;
