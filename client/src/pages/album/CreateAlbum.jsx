@@ -57,7 +57,7 @@ const CreateAlbumPage = () => {
             {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
           </div>
 
-          <div className="two-column-layout">
+          <div className="cover-photo-wrapper">
             <label htmlFor="cover-upload" className="cover-photo-section">
               <div className="cover-upload-area">
                 {!previewUrl ? (
@@ -93,19 +93,6 @@ const CreateAlbumPage = () => {
                 setPreviewUrl(file ? URL.createObjectURL(file) : null);
               }}
             />
-
-            <div className="invite-section">
-              <div className="invite-content">
-                <h3 className="invite-title">Inviter des amis</h3>
-                <p className="invite-description">
-                  Ajoutez des collaborateurs pour qu'ils puissent aussi ajouter leurs photos
-                </p>
-                <button className="invite-button">
-                  + Inviter des amis
-                </button>
-              </div>
-              <div className="star-decoration">⭐</div>
-            </div>
           </div>
 
           <button className="create-album-button" onClick={handleCreateAlbum}>

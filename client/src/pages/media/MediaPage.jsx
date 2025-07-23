@@ -24,6 +24,13 @@ function MediaPage() {
 
   return (
     <>
+      <div className="header-content">
+        <button className="Invite-btn">
+          <span className="btn-icon"></span>
+          Inviter des amis
+        </button>
+      </div>
+
       <div className="media-grid">
         {medias.map((media) => (
           <div key={media._id} className="media-card">
