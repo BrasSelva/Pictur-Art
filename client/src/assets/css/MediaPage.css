@@ -146,7 +146,7 @@ body {
 
 .lightbox {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
@@ -161,7 +161,37 @@ body {
   max-height: 90vh;
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0,0,0,0.7);
-  object-fit: contain; /* Pas de crop, tout est visible */
+  object-fit: contain;
+}
+
+.lightbox-prev,
+.lightbox-next {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.2);
+  border: none;
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  font-size: 2rem;
+  color: white;
+  cursor: pointer;
+  z-index: 1001;
+  transition: background 0.2s;
+}
+
+.lightbox-prev:hover,
+.lightbox-next:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+.lightbox-prev {
+  left: 32px;
+}
+
+.lightbox-next {
+  right: 32px;
 }
 
 .modal-overlay {
@@ -221,3 +251,42 @@ body {
   background: #dc2626;
 }
 
+.slide-media {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+  object-fit: contain;
+  position: relative;
+  animation: slide-in 0.4s ease;
+}
+
+.slide-media.left {
+  animation-name: slide-from-left;
+}
+
+.slide-media.right {
+  animation-name: slide-from-right;
+}
+
+@keyframes slide-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

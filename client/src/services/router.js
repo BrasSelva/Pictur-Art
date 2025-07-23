@@ -14,6 +14,7 @@ import MediaPage from '../pages/media/MediaPage';
 import CodeTemporaire from '../pages/login-register/Temporaire';
 import NouveauMotDePasse from '../pages/login-register/NouveauMotDePasse';
 import CreateAlbum from '../pages/album/CreateAlbum';
+import Timeline from '../pages/timeline/Timeline';
 
 function AppRouter() {
   return (
@@ -25,8 +26,19 @@ function AppRouter() {
       <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
       <Route path="/codeTemporaire" element={<CodeTemporaire />} />
       <Route path="/nouveau-mot-de-passe" element={<NouveauMotDePasse />} />
+      
 
       {/* Routes protégées */}
+      <Route 
+        path="/timeline" 
+        element={
+          <PrivateRoute>
+            <LayoutConnecte>
+              <Timeline />
+            </LayoutConnecte>
+          </PrivateRoute>
+        } 
+      />
       <Route
         path="/albumPage"
         element={
