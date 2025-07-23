@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import UploadButton from '../../components/media/UploadButton';
-import { getToken, getUserIdFromToken } from '../../utils/auth'; // getUser pour l'id utilisateur
+import { getToken, getUserIdFromToken } from '../../utils/auth';
 import { FaUserCircle, FaLock, FaCommentDots, FaTrashAlt } from 'react-icons/fa';
+import SearchBar from '../../components/searchbar/SearchBar';
 import '../../assets/css/MediaPage.css';
+import '../../assets/css/SearchBar.css';
 
 function MediaPage() {
   const { id_album } = useParams();
@@ -19,6 +21,12 @@ function MediaPage() {
   const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
 
   const currentUserId = getUserIdFromToken();
+
+  // 🔎 Filtres
+  const [search, setSearch] = useState('');
+  const [date, setDate] = useState('');
+  const [auteur, setAuteur] = useState('');
+  const [albumFilter, setAlbumFilter] = useState('');
 
   const fetchMedias = async () => {
     const token = getToken();
@@ -44,14 +52,9 @@ function MediaPage() {
         setAlbum(albumRes.data);
 
         await fetchMedias();
-
         setLoading(false);
       } catch (err) {
-        if (err.response && err.response.status === 403) {
-          navigate('/albumPage');
-        } else {
-          navigate('/albumPage');
-        }
+        navigate('/albumPage');
       }
     };
 
@@ -80,125 +83,125 @@ function MediaPage() {
   if (loading) return <p>Chargement...</p>;
 
   return (
-    <>
-    <div className="media-container">
-      <header className='media-header'>
-        <div className="header-content">
-          <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
-          <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
-          {album?.id_utilisateur?.toString() === currentUserId && (
-            <button
-              className="modal-confirm"
-              style={{ background: 'crimson', color: 'white' }}
-              onClick={() => setShowDeleteAlbumModal(true)}
-            >
-              Supprimer l'album
-            </button>
-          )}
-        </div>
-      </header>
+    <div className="media-page-wrapper" style={{ display: 'flex', gap: '2rem', padding: '2rem' }}>
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        date={date}
+        setDate={setDate}
+        auteur={auteur}
+        setAuteur={setAuteur}
+        album={albumFilter}
+        setAlbum={setAlbumFilter}
+      />
 
-      <div className="media-grid">
-        {medias.map((media) => (
-          <div key={media._id} className="media-card">
-            {media.type_media === 'photo' ? (
-              <img
-                src={media.url}
-                alt="media"
-                onClick={() => setSelectedImage({ type: 'image', src: media.url })}
-                style={{ cursor: 'pointer' }}
-              />
-            ) : (
-              <video
-                src={media.url}
-                onClick={() => setSelectedImage({ type: 'video', src: media.url })}
-                style={{ cursor: 'pointer', maxHeight: '200px' }}
-                muted
-                preload="metadata"
-                controls={false}
-              />
+      <div className="media-container" style={{ flex: 1 }}>
+        <header className='media-header'>
+          <div className="header-content">
+            <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
+            <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
+            {album?.id_utilisateur?.toString() === currentUserId && (
+              <button
+                className="modal-confirm"
+                style={{ background: 'crimson', color: 'white' }}
+                onClick={() => setShowDeleteAlbumModal(true)}
+              >
+                Supprimer l'album
+              </button>
             )}
-            <div className="media-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              {/* Gauche : utilisateur */}
-              <p className="media-user" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                <FaUserCircle /> @{media.id_utilisateur?.nom || 'inconnu'}
-              </p>
+          </div>
+        </header>
 
-              {/* Droite : commentaires + poubelle */}
-              <div className="media-icons" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                <FaCommentDots style={{ cursor: 'default' }} />
-                {media.id_utilisateur?._id?.toString() === currentUserId && (
-                  <FaTrashAlt
-                    style={{ cursor: 'pointer', color: 'red' }}
-                    onClick={() => {
-                      setMediaToDelete(media._id);
-                      setShowDeleteModal(true);
-                    }}
-                    title="Supprimer ce média"
+        <div className="media-grid">
+          {medias
+            .filter((media) => {
+              const matchSearch = media.url.toLowerCase().includes(search.toLowerCase());
+              const matchDate = !date || new Date(media.date_publication).toISOString().startsWith(date);
+              const matchAuteur = !auteur || (media.id_utilisateur?.nom || '').toLowerCase().includes(auteur.toLowerCase());
+              const matchAlbum = !albumFilter || (album?.nom || '').toLowerCase().includes(albumFilter.toLowerCase());
+              return matchSearch && matchDate && matchAuteur && matchAlbum;
+            })
+            .map((media) => (
+              <div key={media._id} className="media-card">
+                {media.type_media === 'photo' ? (
+                  <img
+                    src={media.url}
+                    alt="media"
+                    onClick={() => setSelectedImage({ type: 'image', src: media.url })}
+                    style={{ cursor: 'pointer' }}
+                  />
+                ) : (
+                  <video
+                    src={media.url}
+                    onClick={() => setSelectedImage({ type: 'video', src: media.url })}
+                    style={{ cursor: 'pointer', maxHeight: '200px' }}
+                    muted
+                    preload="metadata"
+                    controls={false}
                   />
                 )}
+                <div className="media-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p className="media-user" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <FaUserCircle /> @{media.id_utilisateur?.nom || 'inconnu'}
+                  </p>
+                  <div className="media-icons" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <FaCommentDots style={{ cursor: 'default' }} />
+                    {media.id_utilisateur?._id?.toString() === currentUserId && (
+                      <FaTrashAlt
+                        style={{ cursor: 'pointer', color: 'red' }}
+                        onClick={() => {
+                          setMediaToDelete(media._id);
+                          setShowDeleteModal(true);
+                        }}
+                        title="Supprimer ce média"
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
+        </div>
+
+        {selectedImage && (
+          <div className="lightbox" onClick={() => setSelectedImage(null)}>
+            {selectedImage.type === 'image' ? (
+              <img src={selectedImage.src} alt="zoom" />
+            ) : (
+              <video
+                src={selectedImage.src}
+                controls
+                autoPlay
+                style={{ maxWidth: '90vw', maxHeight: '90vh' }}
+              />
+            )}
+          </div>
+        )}
+
+        {showDeleteModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Supprimer le média ?</h3>
+              <p>Cette action est irréversible.</p>
+              <div className="modal-actions">
+                <button className="modal-cancel" onClick={() => { setShowDeleteModal(false); setMediaToDelete(null); }}>
+                  Annuler
+                </button>
+                <button className="modal-confirm" style={{ color: 'white', background: 'red', marginLeft: 12 }} onClick={handleDelete}>
+                  Supprimer
+                </button>
               </div>
             </div>
           </div>
+        )}
 
-        ))}
-      </div>
-
-      {selectedImage && (
-        <div className="lightbox" onClick={() => setSelectedImage(null)}>
-          {selectedImage.type === 'image' ? (
-            <img src={selectedImage.src} alt="zoom" />
-          ) : (
-            <video
-              src={selectedImage.src}
-              controls
-              autoPlay
-              style={{ maxWidth: '90vw', maxHeight: '90vh' }}
-            />
-          )}
-        </div>
-      )}
-      {showDeleteModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Supprimer le média ?</h3>
-            <p>Cette action est irréversible.</p>
-            <div className="modal-actions">
-              <button
-                className="modal-cancel"
-                onClick={() => {
-                  setShowDeleteModal(false);
-                  setMediaToDelete(null);
-                }}
-              >
-                Annuler
-              </button>
-              <button
-                className="modal-confirm"
-                style={{ color: 'white', background: 'red', marginLeft: 12 }}
-                onClick={handleDelete}
-              >
-                Supprimer
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-      {showDeleteAlbumModal && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h3>Supprimer l'album ?</h3>
-            <p>Cette action supprimera également tous les médias associés.</p>
-            <div className="modal-actions">
-              <button
-                className="modal-cancel"
-                onClick={() => setShowDeleteAlbumModal(false)}
-              >
-                Annuler
-              </button>
-              <button
-                className="modal-confirm"
-                onClick={async () => {
+        {showDeleteAlbumModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Supprimer l'album ?</h3>
+              <p>Cette action supprimera également tous les médias associés.</p>
+              <div className="modal-actions">
+                <button className="modal-cancel" onClick={() => setShowDeleteAlbumModal(false)}>Annuler</button>
+                <button className="modal-confirm" onClick={async () => {
                   try {
                     const token = getToken();
                     await api.delete(`/albums/${id_album}`, {
@@ -210,16 +213,15 @@ function MediaPage() {
                     alert("Erreur lors de la suppression de l'album.");
                     setShowDeleteAlbumModal(false);
                   }
-                }}
-              >
-                Supprimer
-              </button>
+                }}>
+                  Supprimer
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
-    </>
   );
 }
 
