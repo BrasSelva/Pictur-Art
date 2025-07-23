@@ -8,7 +8,11 @@ const upload = require('../middlewares/multer');
 // GET /albums
 router.get('/', verifyToken, async (req, res) => {
   try {
-    const albums = await Album.find({ id_utilisateur: req.utilisateur.id })
+    // On cherche tous les albums où l'utilisateur est membre
+    const membres = await MembreAlbum.find({ id_utilisateur: req.utilisateur.id });
+    const albumIds = membres.map((m) => m.id_album);
+
+    const albums = await Album.find({ _id: { $in: albumIds } })
       .sort({ date_creation: -1 })
       .populate('id_utilisateur', 'nom');
 
@@ -45,20 +49,32 @@ router.get('/:id', verifyToken, async (req, res) => {
 // POST /albums — avec image facultative
 router.post('/', verifyToken, upload.single('couverture'), async (req, res) => {
   try {
-    const imagePath = req.file ? req.file.filename : null;
+    const { nom } = req.body;
+    if (!nom) {
+      return res.status(400).json({ message: 'Nom requis' });
+    }
 
-    const album = new Album({
-      nom: req.body.nom,
-      date_creation: req.body.date_creation || new Date(),
+    // Création de l’album
+    const nouvelAlbum = new Album({
+      nom,
+      date_creation: new Date(),
       id_utilisateur: req.utilisateur.id,
-      image: imagePath,
+      image: req.file ? req.file.filename : null,
     });
 
-    await album.save();
-    res.status(201).json(album);
+    await nouvelAlbum.save();
+
+    // Création du membreAlbum (membre = créateur)
+    const membre = new MembreAlbum({
+      id_utilisateur: req.utilisateur.id,
+      id_album: nouvelAlbum._id,
+    });
+    await membre.save();
+
+    res.status(201).json({ album: nouvelAlbum, membre });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erreur lors de la création de l'album." });
+    console.error('Erreur création album:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 

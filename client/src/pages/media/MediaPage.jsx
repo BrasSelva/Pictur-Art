@@ -14,6 +14,8 @@ function MediaPage() {
   const [selectedImage, setSelectedImage] = useState(null);
   const [album, setAlbum] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [mediaToDelete, setMediaToDelete] = useState(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const currentUserId = getUserIdFromToken();
 
@@ -55,18 +57,19 @@ function MediaPage() {
     verifierAcces();
   }, [id_album, navigate]);
 
-  const handleDelete = async (mediaId) => {
-    if (!window.confirm('Voulez-vous vraiment supprimer ce média ?')) return;
-
+  const handleDelete = async () => {
+    if (!mediaToDelete) return;
     try {
       const token = getToken();
       if (!token) throw new Error('Non connecté');
 
-      await api.delete(`/medias/${mediaId}`, {
+      await api.delete(`/medias/${mediaToDelete}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      setMedias((prev) => prev.filter((m) => m._id !== mediaId));
+      setMedias((prev) => prev.filter((m) => m._id !== mediaToDelete));
+      setShowDeleteModal(false);
+      setMediaToDelete(null);
     } catch (err) {
       console.error('Erreur suppression media :', err);
       alert('Erreur lors de la suppression');
@@ -77,11 +80,13 @@ function MediaPage() {
 
   return (
     <>
+    <div className="media-container">
       <header className='media-header'>
-        <h1>{album?.nom || 'Album inconnu'}</h1>
+        <div className="header-content">
+          <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
+          <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
+        </div>
       </header>
-
-      <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
 
       <div className="media-grid">
         {medias.map((media) => (
@@ -115,7 +120,10 @@ function MediaPage() {
                 {media.id_utilisateur?._id?.toString() === currentUserId && (
                   <FaTrashAlt
                     style={{ cursor: 'pointer', color: 'red' }}
-                    onClick={() => handleDelete(media._id)}
+                    onClick={() => {
+                      setMediaToDelete(media._id);
+                      setShowDeleteModal(true);
+                    }}
                     title="Supprimer ce média"
                   />
                 )}
@@ -140,7 +148,33 @@ function MediaPage() {
           )}
         </div>
       )}
-
+      {showDeleteModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Supprimer le média ?</h3>
+            <p>Cette action est irréversible.</p>
+            <div className="modal-actions">
+              <button
+                className="modal-cancel"
+                onClick={() => {
+                  setShowDeleteModal(false);
+                  setMediaToDelete(null);
+                }}
+              >
+                Annuler
+              </button>
+              <button
+                className="modal-confirm"
+                style={{ color: 'white', background: 'red', marginLeft: 12 }}
+                onClick={handleDelete}
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
     </>
   );
 }
