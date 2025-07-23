@@ -1,14 +1,10 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-require('dotenv').config();  
 const Utilisateur = require('../models/Utilisateur');
 const nodemailer = require('nodemailer');
 const CodeTemporaire = require('../models/CodeTemporaire'); 
+const { SECRET_KEY } = require('../config/config');
 
-const SECRET_KEY = process.env.JWT_SECRET;
-if (!SECRET_KEY) {
-  throw new Error('JWT_SECRET est manquant dans le fichier .env');
-}
 
 exports.creerUtilisateur = async (req, res) => {
   try {
@@ -62,7 +58,6 @@ exports.connecterUtilisateur = async (req, res) => {
       { expiresIn: '2h' }                                 // options
     );
 
-    // Si tout est bon, renvoie les infos (sans le mot de passe !)
     res.status(200).json({
       message: "Connexion réussie",
       utilisateur: {
