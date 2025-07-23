@@ -1,0 +1,46 @@
+.emoji-reaction-wrapper {
+    position: relative;
+    margin-top: 0.5rem;
+    display: inline-block;
+  }
+  
+  .emoji-toggle-btn {
+    background-color: #4f46e5;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    font-size: 1rem;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+  }
+  
+  .emoji-toggle-btn:hover {
+    background-color: #3730a3;
+  }
+  
+  .emoji-list {
+    display: flex;
+    gap: 0.4rem;
+    padding: 0.4rem 0.6rem;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 0.5rem;
+    position: absolute;
+    left: 40px;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .emoji-item {
+    font-size: 1.4rem;
+    cursor: pointer;
+    transition: transform 0.1s;
+  }
+  
+  .emoji-item:hover {
+    transform: scale(1.3);
+  }
+  

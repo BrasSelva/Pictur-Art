@@ -9,6 +9,7 @@ const mediaRoutes = require('./routes/mediaRoutes');
 const membreAlbumRoutes = require('./routes/membreAlbumRoutes');
 const reactionRoutes = require('./routes/reactionRoutes');
 const commentaireRoutes = require('./routes/commentaireRoutes');
+const emojiRoutes = require('./routes/emojiRoutes');
 
 dotenv.config();
 const app = express();
@@ -39,6 +40,8 @@ app.use('/api/medias', mediaRoutes);
 app.use('/api/reactions', reactionRoutes);
 
 app.use('/api/commentaires', commentaireRoutes);
+
+app.use('/api/emojis', emojiRoutes);
 
 app.use('/uploads', express.static('uploads'));
 
