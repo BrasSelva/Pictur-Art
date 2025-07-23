@@ -1,32 +1,31 @@
 import React, { useState } from 'react';
+import '../../assets/css/InviteModal.css';
 
 const InviteModal = ({ albumId }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [pseudo, setPseudo] = useState("");
-  const [message, setMessage] = useState("");
+  const [pseudo, setPseudo] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleInvite = async () => {
-    setMessage("");
+    setMessage('');
     try {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem('token');
 
-      // Étape 1 : récupérer utilisateur par pseudo
       const userRes = await fetch(`/api/utilisateurs/by-pseudo/${pseudo}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       if (!userRes.ok) {
-        setMessage("Utilisateur introuvable");
+        setMessage('Utilisateur introuvable');
         return;
       }
 
       const utilisateur = await userRes.json();
 
-      // Étape 2 : ajouter à l'album
       const res = await fetch(`/api/membrealbums`, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
@@ -37,23 +36,19 @@ const InviteModal = ({ albumId }) => {
 
       const data = await res.json();
       if (res.ok) {
-        setMessage("Invitation envoyée !");
-        setPseudo("");
+        setMessage('Invitation envoyée !');
+        setPseudo('');
       } else {
-        setMessage(data.message || "Erreur");
+        setMessage(data.message || 'Erreur');
       }
     } catch (err) {
-      setMessage("Erreur réseau");
+      setMessage('Erreur réseau');
     }
   };
 
   return (
     <>
-      <button
-        className="Invite-btn"
-        style={{ position: "absolute", top: "1rem", right: "1rem" }}
-        onClick={() => setIsOpen(true)}
-      >
+      <button className="Invite-btn" onClick={() => setIsOpen(true)}>
         Inviter des amis
       </button>
 
@@ -76,4 +71,5 @@ const InviteModal = ({ albumId }) => {
     </>
   );
 };
+
 export default InviteModal;

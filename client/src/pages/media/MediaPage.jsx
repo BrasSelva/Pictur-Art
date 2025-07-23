@@ -86,7 +86,7 @@ function MediaPage() {
   if (loading) return <p>Chargement...</p>;
 
   return (
-    <div className="media-page-wrapper" style={{ display: 'flex', gap: '2rem', padding: '2rem' }}>
+    <div className="media-page-wrapper">
       <SearchBar
         search={search}
         setSearch={setSearch}
@@ -102,7 +102,11 @@ function MediaPage() {
         <header className='media-header'>
           <div className="header-content">
             <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
+
             <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
+
+            <InviteModal albumId={id_album} /> {/* ← ce bouton apparaîtra avant celui-ci */}
+
             {album?.id_utilisateur?.toString() === currentUserId && (
               <button
                 className="modal-confirm"
@@ -113,14 +117,9 @@ function MediaPage() {
               </button>
             )}
           </div>
+
         </header>
 
-        <div className="header-content">
-          <button className="Invite-btn">
-            <span className="btn-icon"></span>
-            <InviteModal albumId={id_album} />
-          </button>
-        </div>
 
         <div className="media-grid">
           {medias
