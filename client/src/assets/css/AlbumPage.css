@@ -244,14 +244,26 @@
   padding: 0.4rem 0.8rem;
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   color: #1d4ed8;
+  border: none;
   border-radius: 20px;
   font-size: 0.85rem;
   font-weight: 600;
+  cursor: pointer; 
+}
+
+
+.private-badge:focus {
+  outline: none;
 }
 
 .badge-icon {
-  font-size: 0.8rem;
-}
+  font-size: 1.2rem;
+} 
+
+
+
+
+
 
 @media (max-width: 768px) {
   .album-container {

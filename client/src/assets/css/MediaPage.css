@@ -221,3 +221,23 @@ body {
   background: #dc2626;
 }
 
+.header-content {
+  position: relative;
+}
+
+.Invite-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: #f69449;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.Invite-btn:hover {
+  background-color: #ec6c10;
+}
