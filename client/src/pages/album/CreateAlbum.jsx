@@ -16,11 +16,6 @@ const CreateAlbumPage = () => {
       return;
     }
 
-    if (!coverFile) {
-      setError("Veuillez sélectionner une image de couverture.");
-      return;
-    }
-
     try {
       const formData = new FormData();
       formData.append('nom', albumName);

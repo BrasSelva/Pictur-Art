@@ -58,8 +58,8 @@ function AlbumPage() {
       <div className="album-header">
         <div className="header-content">
           <h2 className="page-title">Mes Albums</h2>
-          <button 
-            className="create-album-btn" 
+          <button
+            className="create-album-btn"
             onClick={() => navigate('/createAlbum')}
           >
             <span className="btn-icon"></span>
@@ -80,7 +80,7 @@ function AlbumPage() {
           <div className="empty-icon">📁</div>
           <h3 className="empty-title">Aucun album trouvé</h3>
           <p className="empty-description">Créez votre premier album pour commencer !</p>
-          <button 
+          <button
             className="empty-cta-btn"
             onClick={() => navigate('/createAlbum')}
           >
@@ -114,7 +114,7 @@ function AlbumPage() {
                 <div className="album-details">
                   <div className="album-date">
                     <span className="detail-icon">📅</span>
-                    <span>Date de création : {formatDate(album.date_creation)}</span>
+                    <span>{formatDate(album.date_creation)}</span>
                   </div>
 
                   <div className="album-author">
@@ -125,12 +125,10 @@ function AlbumPage() {
 
                 <div className="album-footer">
                   <span className="private-badge">
-                    <span className="badge-icon">🔒</span>
-                    Privé
+                    <span className="badge-icon"></span>
+                     Modifier la couverture
                   </span>
-                  <button onClick={() => handleCoverChange(album._id)} style={{ marginLeft: '10px', fontSize: '0.8rem', padding: '4px 8px', borderRadius: '4px', border: '1px solid #ccc', cursor: 'pointer' }}>
-                    🖼️ Modifier la couverture
-                  </button>
+
                 </div>
               </div>
             </div>
