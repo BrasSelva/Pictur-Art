@@ -234,3 +234,36 @@ body {
   gap: 0.3rem;
 }
 
+.user-reaction {
+  margin-top: 0.3rem;
+  font-size: 1.2rem;
+}
+
+.others-reactions {
+  margin-top: 0.3rem;
+  font-size: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.header-content {
+  position: relative;
+}
+
+.Invite-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background-color: #f69449;
+  color: white;
+  border: none;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.Invite-btn:hover {
+  background-color: #ec6c10;
+}

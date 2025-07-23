@@ -142,6 +142,13 @@ function MediaPage() {
           </div>
         </header>
 
+      <div className="header-content">
+        <button className="Invite-btn">
+          <span className="btn-icon"></span>
+          Inviter des amis
+        </button>
+      </div>
+
         <div className="media-grid">
           {medias.map((media) => {
             const reactions = reactionsMap[media._id] || [];

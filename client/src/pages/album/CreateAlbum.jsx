@@ -23,14 +23,14 @@ const CreateAlbumPage = () => {
       formData.append('date_creation', new Date().toISOString());
       formData.append('couverture', coverFile);
 
-      const token = getToken(); // <--- récupère le token
+      const token = getToken();
 
       await apiForm.post('/albums', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
         }
       });
-      
+
       navigate('/albumPage');
     } catch (err) {
       console.error(err);
@@ -64,8 +64,15 @@ const CreateAlbumPage = () => {
             {error && <p style={{ color: 'red', marginTop: '0.5rem' }}>{error}</p>}
           </div>
 
-          <div className="two-column-layout">
-            <label htmlFor="cover-upload" className="cover-photo-section">
+          <div className="cover-photo-wrapper">
+            <div
+              className="cover-photo-section"
+              onClick={() => {
+                if (!previewUrl) {
+                  document.getElementById('cover-upload').click();
+                }
+              }}
+            >
               <div className="cover-upload-area">
                 {!previewUrl ? (
                   <>
@@ -79,7 +86,14 @@ const CreateAlbumPage = () => {
                 ) : (
                   <div className="cover-preview-wrapper">
                     <img src={previewUrl} alt="Aperçu couverture" className="cover-preview-image" />
-                    <button type="button" className="remove-cover-button" onClick={removeCover}>
+                    <button
+                      type="button"
+                      className="remove-cover-button"
+                      onClick={(e) => {
+                        e.stopPropagation(); // empêche l'ouverture du file picker
+                        removeCover();
+                      }}
+                    >
                       <svg width="20" height="20" viewBox="0 0 24 24" fill="#FF3B30" xmlns="http://www.w3.org/2000/svg">
                         <path d="M18.3 5.71a1 1 0 00-1.42 0L12 10.59 7.11 5.7A1 1 0 105.7 7.11L10.59 12l-4.89 4.89a1 1 0 101.41 1.41L12 13.41l4.89 4.89a1 1 0 001.41-1.41L13.41 12l4.89-4.89a1 1 0 000-1.4z" />
                       </svg>
@@ -87,7 +101,7 @@ const CreateAlbumPage = () => {
                   </div>
                 )}
               </div>
-            </label>
+            </div>
 
             <input
               type="file"
@@ -100,19 +114,6 @@ const CreateAlbumPage = () => {
                 setPreviewUrl(file ? URL.createObjectURL(file) : null);
               }}
             />
-
-            <div className="invite-section">
-              <div className="invite-content">
-                <h3 className="invite-title">Inviter des amis</h3>
-                <p className="invite-description">
-                  Ajoutez des collaborateurs pour qu'ils puissent aussi ajouter leurs photos
-                </p>
-                <button className="invite-button">
-                  + Inviter des amis
-                </button>
-              </div>
-              <div className="star-decoration">⭐</div>
-            </div>
           </div>
 
           <button className="create-album-button" onClick={handleCreateAlbum}>
