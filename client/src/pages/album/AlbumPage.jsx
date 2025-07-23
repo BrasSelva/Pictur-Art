@@ -5,22 +5,19 @@ import api from '../../api/api';
 import { apiForm } from '../../api/api';
 import { useNavigate } from 'react-router-dom';
 import SearchBar from '../../components/searchbar/SearchBar';
-import '../../assets/css/SearchBar.css';
 import { getUserIdFromToken } from '../../utils/auth';
-
 
 function AlbumPage() {
   const navigate = useNavigate();
   const [albums, setAlbums] = useState([]);
   const [erreur, setErreur] = useState('');
 
-  // 🧠 Filtres
+  // 🔍 Filtres
   const [search, setSearch] = useState('');
   const [date, setDate] = useState('');
   const [auteur, setAuteur] = useState('');
   const [album, setAlbum] = useState('');
   const userIdConnecte = getUserIdFromToken();
-
 
   useEffect(() => {
     fetchAlbums();
@@ -66,7 +63,6 @@ function AlbumPage() {
     fileInput.click();
   };
 
-  // 🔍 Filtrage côté front (optionnel, sinon à brancher avec l’API)
   const filteredAlbums = albums.filter((albumItem) => {
     const matchSearch = albumItem.nom.toLowerCase().includes(search.toLowerCase());
     const matchDate = !date || new Date(albumItem.date_creation).toISOString().startsWith(date);
@@ -93,7 +89,7 @@ function AlbumPage() {
           <div className="header-content">
             <h2 className="page-title">Mes Albums</h2>
             {albums.length > 0 && (
-            <button
+              <button
                 className="create-album-btn"
                 onClick={() => navigate('/createAlbum')}
               >
@@ -101,9 +97,8 @@ function AlbumPage() {
                 Créer un album privé
               </button>
             )}
+          </div>
         </div>
-  
-      </div>
 
         {erreur && (
           <div className="error-message">
@@ -159,33 +154,32 @@ function AlbumPage() {
                       <span>{formatDate(album.date_creation)}</span>
                     </div>
 
-                  <div className="album-author">
-                    <span className="detail-icon">👤</span>
-                    <span>{album.id_utilisateur?.nom || 'Inconnu'}</span>
+                    <div className="album-author">
+                      <span className="detail-icon">👤</span>
+                      <span>{album.id_utilisateur?.nom || 'Inconnu'}</span>
+                    </div>
                   </div>
+
+                  {album.id_utilisateur?._id === userIdConnecte && (
+                    <div className="album-footer">
+                      <button
+                        className="private-badge"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleCoverChange(album._id);
+                        }}
+                      >
+                        <span className="badge-icon"></span>
+                        Modifier la couverture
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {album.id_utilisateur?._id === userIdConnecte && (
-                  <div className="album-footer">
-                    <button
-                      className="private-badge"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleCoverChange(album._id);
-                      }}
-                    >
-                      <span className="badge-icon"></span>
-                      Modifier la couverture
-                    </button>
-                  </div>
-                )}
-
-
-
               </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
