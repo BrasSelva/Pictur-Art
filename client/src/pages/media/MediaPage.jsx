@@ -16,6 +16,7 @@ function MediaPage() {
   const [loading, setLoading] = useState(true);
   const [mediaToDelete, setMediaToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
 
   const currentUserId = getUserIdFromToken();
 
@@ -85,6 +86,15 @@ function MediaPage() {
         <div className="header-content">
           <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
           <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
+          {album?.id_utilisateur?.toString() === currentUserId && (
+            <button
+              className="modal-confirm"
+              style={{ background: 'crimson', color: 'white' }}
+              onClick={() => setShowDeleteAlbumModal(true)}
+            >
+              Supprimer l'album
+            </button>
+          )}
         </div>
       </header>
 
@@ -167,6 +177,40 @@ function MediaPage() {
                 className="modal-confirm"
                 style={{ color: 'white', background: 'red', marginLeft: 12 }}
                 onClick={handleDelete}
+              >
+                Supprimer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+      {showDeleteAlbumModal && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h3>Supprimer l'album ?</h3>
+            <p>Cette action supprimera également tous les médias associés.</p>
+            <div className="modal-actions">
+              <button
+                className="modal-cancel"
+                onClick={() => setShowDeleteAlbumModal(false)}
+              >
+                Annuler
+              </button>
+              <button
+                className="modal-confirm"
+                onClick={async () => {
+                  try {
+                    const token = getToken();
+                    await api.delete(`/albums/${id_album}`, {
+                      headers: { Authorization: `Bearer ${token}` },
+                    });
+                    navigate('/albumPage');
+                  } catch (err) {
+                    console.error("Erreur suppression album:", err);
+                    alert("Erreur lors de la suppression de l'album.");
+                    setShowDeleteAlbumModal(false);
+                  }
+                }}
               >
                 Supprimer
               </button>
