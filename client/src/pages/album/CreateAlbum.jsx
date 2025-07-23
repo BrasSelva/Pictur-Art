@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../assets/css/CreateAlbum.css';
 import { apiForm } from '../../api/api';
+import { getToken } from '../../utils/auth';
 
 const CreateAlbumPage = () => {
   const [coverFile, setCoverFile] = useState(null);
@@ -22,8 +23,14 @@ const CreateAlbumPage = () => {
       formData.append('date_creation', new Date().toISOString());
       formData.append('couverture', coverFile);
 
-      await apiForm.post('/albums', formData);
+      const token = getToken(); // <--- récupère le token
 
+      await apiForm.post('/albums', formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        }
+      });
+      
       navigate('/albumPage');
     } catch (err) {
       console.error(err);
