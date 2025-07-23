@@ -1,13 +1,17 @@
 import axios from 'axios';
 
+const isLocalhost = window.location.hostname === 'localhost';
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', 
+  baseURL: isLocalhost 
+    ? 'http://localhost:5000/api'
+    : 'https://backendpicturart.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Intercepteur pour ajouter le token d'authentification à chaque requête
+// Intercepteur pour ajouter le token
 api.interceptors.request.use((config) => {
   try {
     const userString = localStorage.getItem('user');
@@ -21,6 +25,5 @@ api.interceptors.request.use((config) => {
   }
   return config;
 });
-
 
 export default api;

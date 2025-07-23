@@ -90,7 +90,7 @@ exports.motDePasseOublie = async (req, res) => {
     const utilisateur = await Utilisateur.findOne({ email });
 
     if (!utilisateur) {
-      return res.status(200).json({ success: false, message: "Aucun compte trouvé avec cet email." });
+      return res.status(200).json({ success: false, message: "Si votre compte existe, vous recevrez un code par email" });
     }
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
