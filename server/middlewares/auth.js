@@ -1,10 +1,7 @@
 const jwt = require('jsonwebtoken');
-require('dotenv').config(); 
 
 const SECRET_KEY = process.env.JWT_SECRET;
-if (!SECRET_KEY) {
-  throw new Error("❌ JWT_SECRET manquant dans .env");
-}
+
 
 module.exports = (req, res, next) => {
   const token = req.headers.authorization && req.headers.authorization.split(' ')[1]; // "Bearer token"
