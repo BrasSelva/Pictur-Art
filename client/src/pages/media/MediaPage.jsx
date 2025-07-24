@@ -37,12 +37,15 @@ function MediaPage() {
     const mediasFetched = res.data;
     setMedias(mediasFetched);
 
-    const newMap = {};
-    for (let media of mediasFetched) {
-      const r = await api.get(`/reactions/media/${media._id}`);
-      newMap[media._id] = r.data;
-    }
-    setReactionsMap(newMap);
+    // Charger les réactions pour chaque média
+    const map = {};
+    await Promise.all(
+      mediasFetched.map(async (media) => {
+        const r = await api.get(`/reactions/media/${media._id}`);
+        map[media._id] = r.data;
+      })
+    );
+    setReactionsMap(map);
   };
 
   useEffect(() => {
@@ -66,12 +69,8 @@ function MediaPage() {
     verifierAcces();
   }, [id_album, navigate]);
 
-  const handleReact = async (mediaId, emojiId) => {
-    const token = getToken();
-    await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    await fetchMedias();
+  const handleReact = async (mediaId) => {
+    await fetchMedias(); // recharge les réactions pour tous les médias
   };
 
   const handleDelete = async () => {
@@ -100,7 +99,7 @@ function MediaPage() {
   return (
     <div className="media-page-wrapper" style={{ display: 'flex', gap: '2rem', padding: '2rem' }}>
       
-      {/* Barre de recherche à gauche */}
+      {/* Barre de recherche */}
       <div style={{ minWidth: '300px' }}>
         <SearchBar
           search={search}
@@ -119,7 +118,7 @@ function MediaPage() {
         <div className="media-header">
           <div className="header-content">
             <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
-            <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
+            <UploadButton id_album={id_album} onUploadSuccess={() => fetchMedias()} />
           </div>
         </div>
 
