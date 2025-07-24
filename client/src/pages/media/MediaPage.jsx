@@ -3,14 +3,13 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../../api/api';
 import UploadButton from '../../components/media/UploadButton';
 import { getToken, getUserIdFromToken } from '../../utils/auth';
-import { FaUserCircle, FaLock, FaCommentDots, FaTrashAlt } from 'react-icons/fa';
+import { FaUserCircle, FaCommentDots, FaTrashAlt } from 'react-icons/fa';
 import SearchBar from '../../components/searchbar/SearchBar';
 import EmojiReactionButton from '../../components/media/EmojiReactionButton';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
 
-import InviteModal from '../../pages/media/InviteModal';
-
+import InviteModal from './InviteModal';
 
 function MediaPage() {
   const { id_album } = useParams();
@@ -91,20 +90,15 @@ function MediaPage() {
 
   const handleReact = async (mediaId, emojiId) => {
     const token = getToken();
-  
     const reactions = reactionsMap[mediaId] || [];
     const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
-  
+
     try {
-      // 👇 Si l'utilisateur a déjà réagi avec CE MÊME emoji => suppression
       if (currentUserReaction && currentUserReaction.id_emoji._id === emojiId) {
         await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
           headers: { Authorization: `Bearer ${token}` },
         });
-      }
-      // 👇 Sinon (aucune réaction ou un emoji différent) => toggle normal
-      else {
-        // ⚠️ Supprimer l’ancienne réaction s’il y en a une
+      } else {
         if (currentUserReaction) {
           await api.post('/reactions/toggle', {
             id_media: mediaId,
@@ -113,18 +107,17 @@ function MediaPage() {
             headers: { Authorization: `Bearer ${token}` },
           });
         }
-        // Puis ajouter la nouvelle
+
         await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
           headers: { Authorization: `Bearer ${token}` },
         });
       }
-  
-      await fetchMedias(); // rechargement pour mise à jour
+
+      await fetchMedias();
     } catch (err) {
       console.error('Erreur lors de la réaction :', err);
     }
   };
-  
 
   if (loading) return <p>Chargement...</p>;
 
@@ -148,21 +141,21 @@ function MediaPage() {
 
             <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
 
-            <InviteModal albumId={id_album} /> {/* ← ce bouton apparaîtra avant celui-ci */}
-
+            {/* Boutons visibles uniquement pour le créateur de l’album */}
             {album?.id_utilisateur?.toString() === currentUserId && (
-              <button
-                className="modal-confirm"
-                style={{ background: 'crimson', color: 'white' }}
-                onClick={() => setShowDeleteAlbumModal(true)}
-              >
-                Supprimer l'album
-              </button>
+              <>
+                <InviteModal albumId={id_album} />
+                <button
+                  className="modal-confirm"
+                  style={{ background: 'crimson', color: 'white' }}
+                  onClick={() => setShowDeleteAlbumModal(true)}
+                >
+                  Supprimer l'album
+                </button>
+              </>
             )}
           </div>
-
         </header>
-
 
         <div className="media-grid">
           {medias.map((media) => {
@@ -205,10 +198,8 @@ function MediaPage() {
                     </div>
                   )}
 
-                  {/* ➕ Réaction */}
                   <EmojiReactionButton mediaId={media._id} onReact={handleReact} />
 
-                  {/* Icônes */}
                   <div className="media-icons">
                     <FaCommentDots />
                     {media.id_utilisateur?._id?.toString() === currentUserId && (
@@ -237,7 +228,6 @@ function MediaPage() {
           </div>
         )}
 
-        {/* Confirmations modales */}
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal">
