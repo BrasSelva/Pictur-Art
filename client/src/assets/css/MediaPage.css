@@ -286,6 +286,32 @@ img, video {
   background: #dc2626;
 }
 
+.user-reaction {
+  margin-top: 0.3rem;
+  font-size: 1.2rem;
+}
+
+.others-reactions {
+  margin-top: 0.3rem;
+  font-size: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.user-reaction {
+  margin-top: 0.3rem;
+  font-size: 1.2rem;
+}
+
+.others-reactions {
+  margin-top: 0.3rem;
+  font-size: 1.1rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
 .header-content {
   display: flex;
   flex-wrap: wrap;

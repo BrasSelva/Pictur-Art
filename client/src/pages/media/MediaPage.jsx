@@ -5,6 +5,7 @@ import UploadButton from '../../components/media/UploadButton';
 import { getToken, getUserIdFromToken } from '../../utils/auth';
 import { FaUserCircle, FaLock, FaCommentDots, FaTrashAlt } from 'react-icons/fa';
 import SearchBar from '../../components/searchbar/SearchBar';
+import EmojiReactionButton from '../../components/media/EmojiReactionButton';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
 
@@ -16,27 +17,31 @@ function MediaPage() {
   const navigate = useNavigate();
 
   const [medias, setMedias] = useState([]);
-  const [selectedImage, setSelectedImage] = useState(null);
   const [album, setAlbum] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [reactionsMap, setReactionsMap] = useState({});
   const [mediaToDelete, setMediaToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const currentUserId = getUserIdFromToken();
-
-  // 🔎 Filtres
-  const [search, setSearch] = useState('');
-  const [date, setDate] = useState('');
-  const [auteur, setAuteur] = useState('');
-  const [albumFilter, setAlbumFilter] = useState('');
 
   const fetchMedias = async () => {
     const token = getToken();
     const res = await api.get(`/medias/album/${id_album}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    setMedias(res.data);
+
+    const mediasFetched = res.data;
+    setMedias(mediasFetched);
+
+    const newMap = {};
+    for (let media of mediasFetched) {
+      const r = await api.get(`/reactions/media/${media._id}`);
+      newMap[media._id] = r.data;
+    }
+    setReactionsMap(newMap);
   };
 
   useEffect(() => {
@@ -68,8 +73,6 @@ function MediaPage() {
     if (!mediaToDelete) return;
     try {
       const token = getToken();
-      if (!token) throw new Error('Non connecté');
-
       await api.delete(`/medias/${mediaToDelete}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
@@ -78,10 +81,46 @@ function MediaPage() {
       setShowDeleteModal(false);
       setMediaToDelete(null);
     } catch (err) {
-      console.error('Erreur suppression media :', err);
       alert('Erreur lors de la suppression');
     }
   };
+
+  const handleReact = async (mediaId, emojiId) => {
+    const token = getToken();
+  
+    const reactions = reactionsMap[mediaId] || [];
+    const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
+  
+    try {
+      // 👇 Si l'utilisateur a déjà réagi avec CE MÊME emoji => suppression
+      if (currentUserReaction && currentUserReaction.id_emoji._id === emojiId) {
+        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+      // 👇 Sinon (aucune réaction ou un emoji différent) => toggle normal
+      else {
+        // ⚠️ Supprimer l’ancienne réaction s’il y en a une
+        if (currentUserReaction) {
+          await api.post('/reactions/toggle', {
+            id_media: mediaId,
+            id_emoji: currentUserReaction.id_emoji._id
+          }, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        }
+        // Puis ajouter la nouvelle
+        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+  
+      await fetchMedias(); // rechargement pour mise à jour
+    } catch (err) {
+      console.error('Erreur lors de la réaction :', err);
+    }
+  };
+  
 
   if (loading) return <p>Chargement...</p>;
 
@@ -122,39 +161,52 @@ function MediaPage() {
 
 
         <div className="media-grid">
-          {medias
-            .filter((media) => {
-              const matchSearch = media.url.toLowerCase().includes(search.toLowerCase());
-              const matchDate = !date || new Date(media.date_publication).toISOString().startsWith(date);
-              const matchAuteur = !auteur || (media.id_utilisateur?.nom || '').toLowerCase().includes(auteur.toLowerCase());
-              const matchAlbum = !albumFilter || (album?.nom || '').toLowerCase().includes(albumFilter.toLowerCase());
-              return matchSearch && matchDate && matchAuteur && matchAlbum;
-            })
-            .map((media) => (
+          {medias.map((media) => {
+            const reactions = reactionsMap[media._id] || [];
+            const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
+            const otherReactions = reactions.filter(r => r.id_utilisateur._id !== currentUserId);
+
+            return (
               <div key={media._id} className="media-card">
                 {media.type_media === 'photo' ? (
                   <img
                     src={media.url}
                     alt="media"
                     onClick={() => setSelectedImage({ type: 'image', src: media.url })}
-                    style={{ cursor: 'pointer' }}
                   />
                 ) : (
                   <video
                     src={media.url}
                     onClick={() => setSelectedImage({ type: 'video', src: media.url })}
-                    style={{ cursor: 'pointer', maxHeight: '200px' }}
                     muted
                     preload="metadata"
                     controls={false}
                   />
                 )}
-                <div className="media-info" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <p className="media-user" style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                    <FaUserCircle /> @{media.id_utilisateur?.nom || 'inconnu'}
-                  </p>
-                  <div className="media-icons" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                    <FaCommentDots style={{ cursor: 'default' }} />
+
+                <div className="media-info">
+                  <p className="media-user"><FaUserCircle /> @{media.id_utilisateur?.nom || 'inconnu'}</p>
+
+                  {currentUserReaction && (
+                    <div className="user-reaction">Votre réaction : {currentUserReaction.id_emoji.emoji}</div>
+                  )}
+
+                  {otherReactions.length > 0 && (
+                    <div className="others-reactions">
+                      {otherReactions.map((r) => (
+                        <span key={r._id} title={`@${r.id_utilisateur.nom}`}>
+                          {r.id_emoji.emoji}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* ➕ Réaction */}
+                  <EmojiReactionButton mediaId={media._id} onReact={handleReact} />
+
+                  {/* Icônes */}
+                  <div className="media-icons">
+                    <FaCommentDots />
                     {media.id_utilisateur?._id?.toString() === currentUserId && (
                       <FaTrashAlt
                         style={{ cursor: 'pointer', color: 'red' }}
@@ -162,13 +214,13 @@ function MediaPage() {
                           setMediaToDelete(media._id);
                           setShowDeleteModal(true);
                         }}
-                        title="Supprimer ce média"
                       />
                     )}
                   </div>
                 </div>
               </div>
-            ))}
+            );
+          })}
         </div>
 
         {selectedImage && (
@@ -176,16 +228,12 @@ function MediaPage() {
             {selectedImage.type === 'image' ? (
               <img src={selectedImage.src} alt="zoom" />
             ) : (
-              <video
-                src={selectedImage.src}
-                controls
-                autoPlay
-                style={{ maxWidth: '90vw', maxHeight: '90vh' }}
-              />
+              <video src={selectedImage.src} controls autoPlay />
             )}
           </div>
         )}
 
+        {/* Confirmations modales */}
         {showDeleteModal && (
           <div className="modal-overlay">
             <div className="modal">
@@ -195,7 +243,7 @@ function MediaPage() {
                 <button className="modal-cancel" onClick={() => { setShowDeleteModal(false); setMediaToDelete(null); }}>
                   Annuler
                 </button>
-                <button className="modal-confirm" style={{ color: 'white', background: 'red', marginLeft: 12 }} onClick={handleDelete}>
+                <button className="modal-confirm" onClick={handleDelete}>
                   Supprimer
                 </button>
               </div>
