@@ -18,6 +18,7 @@ import Contact from '../pages/Contact/Contact';
 import MentionLegales from '../pages/reglementation/MentionLegales';
 import CguPage from '../pages/reglementation/CguPage';
 import APropos from '../pages/reglementation/APropos';
+import Timeline from '../pages/timeline/Timeline';
 
 function AppRouter() {
   return (
@@ -33,8 +34,19 @@ function AppRouter() {
       <Route path="/cguPage" element={<CguPage />} />
       <Route path="/aPropos" element={<APropos />} />
       <Route path="/contact" element={<Contact />} />
+      
 
       {/* Routes protégées */}
+      <Route 
+        path="/timeline" 
+        element={
+          <PrivateRoute>
+            <LayoutConnecte>
+              <Timeline />
+            </LayoutConnecte>
+          </PrivateRoute>
+        } 
+      />
       <Route
         path="/albumPage"
         element={

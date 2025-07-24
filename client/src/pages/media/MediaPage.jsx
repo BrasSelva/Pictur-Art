@@ -11,24 +11,29 @@ import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
 import InviteModal from './InviteModal';
 
-function MediaPage() {
-  const { id_album } = useParams();
-  const navigate = useNavigate();
-  const currentUserId = getUserIdFromToken();
+  function MediaPage() {
+    const { id_album } = useParams();
+    const navigate = useNavigate();
+    const currentUserId = getUserIdFromToken();
 
-  const [medias, setMedias] = useState([]);
-  const [album, setAlbum] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [reactionsMap, setReactionsMap] = useState({});
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [mediaToDelete, setMediaToDelete] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
+    const [medias, setMedias] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [album, setAlbum] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [mediaToDelete, setMediaToDelete] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
+    const [showQuitAlbumModal, setShowQuitAlbumModal] = useState(false);
+    const [slideDirection, setSlideDirection] = useState(null);
+    const [reactionsMap, setReactionsMap] = useState({});
+    const [selectedMedia, setSelectedMedia] = useState(null);
+    const [search, setSearch] = useState('');
+    const [date, setDate] = useState('');
+    const [auteur, setAuteur] = useState('');
+    const [albumFilter, setAlbumFilter] = useState('');
 
-  const [search, setSearch] = useState('');
-  const [date, setDate] = useState('');
-  const [auteur, setAuteur] = useState('');
-  const [albumFilter, setAlbumFilter] = useState('');
+    
+
 
   const fetchMedias = async () => {
     try {
@@ -52,52 +57,62 @@ function MediaPage() {
     }
   };
 
-  useEffect(() => {
-    const verifierAcces = async () => {
+    useEffect(() => {
+      const verifierAcces = async () => {
+        try {
+          const token = getToken();
+          if (!token) throw new Error('Non connecté');
+
+          await api.get(`/medias/album/${id_album}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const albumRes = await api.get(`/albums/${id_album}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setAlbum(albumRes.data);
+
+          await fetchMedias();
+
+          setLoading(false);
+        } catch (err) {
+          navigate('/albumPage');
+        }
+      };
+
+      verifierAcces();
+    }, [id_album, navigate]);
+
+  const handleDelete = async () => {
+      if (!mediaToDelete) return;
       try {
         const token = getToken();
         if (!token) throw new Error('Non connecté');
-        const albumRes = await api.get(`/albums/${id_album}`, {
+
+        await api.delete(`/medias/${mediaToDelete}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setAlbum(albumRes.data);
-        await fetchMedias();
-        setLoading(false);
+
+        setMedias((prev) => prev.filter((m) => m._id !== mediaToDelete));
+        setShowDeleteModal(false);
+        setMediaToDelete(null);
       } catch (err) {
-        navigate('/albumPage');
+        alert('Erreur lors de la suppression');
       }
     };
-    verifierAcces();
-  }, [id_album, navigate]);
-
-  const handleDelete = async () => {
-    try {
-      const token = getToken();
-      await api.delete(`/medias/${mediaToDelete}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      await fetchMedias();
-      setShowDeleteModal(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const handleDeleteAlbum = async () => {
-    try {
-      const token = getToken();
-      await api.delete(`/albums/${id_album}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      navigate('/albumPage');
-    } catch (err) {
-      console.error("Erreur suppression album :", err);
-      alert("La suppression de l'album a échoué.");
-    }
-  };
 
   const handleReact = async (mediaId, emojiId) => {
     await fetchMedias(); // Recharge toutes les réactions à jour
+    };
+
+    const handlePrev = () => {
+    setSlideDirection('left');
+    setSelectedIndex((prevIndex) => (prevIndex - 1 + medias.length) % medias.length);
+  };
+
+  const handleNext = () => {
+    setSlideDirection('right');
+    setSelectedIndex((prevIndex) => (prevIndex + 1) % medias.length);
   };
 
   const filteredMedias = medias.filter((media) => {
@@ -108,7 +123,7 @@ function MediaPage() {
     return matchesSearch && matchesDate && matchesAuteur && matchesAlbum;
   });
 
-  if (loading) return <p>Chargement...</p>;
+    if (loading) return <p>Chargement...</p>;
 
   return (
     <div className="media-page-wrapper">
@@ -145,7 +160,7 @@ function MediaPage() {
         </header>
 
         <div className="media-grid">
-          {filteredMedias.map((media) => {
+          {filteredMedias.map((media, i) => {
             const reactions = reactionsMap[media._id] || [];
             const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
             const otherReactions = reactions.filter(r => r.id_utilisateur._id !== currentUserId);
@@ -153,9 +168,21 @@ function MediaPage() {
             return (
               <div key={media._id} className="media-card">
                 {media.type_media === 'photo' ? (
-                  <img src={media.url} alt="media" onClick={() => setSelectedMedia(media)} />
+                  <img
+                    src={media.url}
+                    alt="media"
+                    onClick={() => setSelectedIndex(i)}
+                    style={{ cursor: 'pointer' }}
+                  />
                 ) : (
-                  <video src={media.url} muted onClick={() => setSelectedMedia(media)} />
+                  <video
+                    src={media.url}
+                    onClick={() => setSelectedIndex(i)}
+                    style={{ cursor: 'pointer', maxHeight: '200px' }}
+                    muted
+                    preload="metadata"
+                    controls={false}
+                  />
                 )}
 
                 <div className="media-info">
@@ -180,14 +207,15 @@ function MediaPage() {
                   <EmojiReactionButton mediaId={media._id} onReact={handleReact} />
 
                   <div className="media-icons">
-                    <FaCommentDots style={{ cursor: 'default' }} />
-                    {media.id_utilisateur?._id === currentUserId && (
+                    <FaCommentDots />
+                    {media.id_utilisateur?._id?.toString() === currentUserId && (
                       <FaTrashAlt
                         style={{ cursor: 'pointer', color: 'red' }}
                         onClick={() => {
                           setMediaToDelete(media._id);
                           setShowDeleteModal(true);
                         }}
+                        title="Supprimer ce média"
                       />
                     )}
                   </div>
@@ -197,42 +225,108 @@ function MediaPage() {
           })}
         </div>
 
-        {selectedMedia && (
-          <MediaLightbox
-            media={selectedMedia}
-            onClose={() => setSelectedMedia(null)}
-            currentUserId={currentUserId}
-          />
-        )}
+          {selectedIndex !== null && (
+            <MediaLightbox
+              media={medias[selectedIndex]}
+              onClose={() => setSelectedIndex(null)}
+              currentUserId={currentUserId}
+              handlePrev={handlePrev}
+              handleNext={handleNext}
+              slideDirection={slideDirection}
+              key={medias[selectedIndex]?._id}
+            />
+          )}
 
-        {showDeleteModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>Supprimer le média ?</h3>
-              <p>Cette action est irréversible.</p>
-              <div className="modal-actions">
-                <button className="modal-cancel" onClick={() => setShowDeleteModal(false)}>Annuler</button>
-                <button className="modal-confirm" onClick={handleDelete}>Supprimer</button>
+          {showDeleteModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Supprimer le média ?</h3>
+                <p>Cette action est irréversible.</p>
+                <div className="modal-actions">
+                  <button
+                    className="modal-cancel"
+                    onClick={() => {
+                      setShowDeleteModal(false);
+                      setMediaToDelete(null);
+                    }}
+                  >
+                    Annuler
+                  </button>
+                  <button className="modal-confirm" onClick={handleDelete}>
+                    Supprimer
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
 
-        {showDeleteAlbumModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>Supprimer l'album ?</h3>
-              <p>Cette action est irréversible. Tous les médias seront supprimés.</p>
-              <div className="modal-actions">
-                <button className="modal-cancel" onClick={() => setShowDeleteAlbumModal(false)}>Annuler</button>
-                <button className="modal-confirm" onClick={handleDeleteAlbum}>Supprimer</button>
+          {showDeleteAlbumModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Supprimer l'album ?</h3>
+                <p>Cette action supprimera également tous les médias associés.</p>
+                <div className="modal-actions">
+                  <button className="modal-cancel" onClick={() => setShowDeleteAlbumModal(false)}>
+                    Annuler
+                  </button>
+                  <button
+                    className="modal-confirm"
+                    onClick={async () => {
+                      try {
+                        const token = getToken();
+                        await api.delete(`/albums/${id_album}`, {
+                          headers: { Authorization: `Bearer ${token}` },
+                        });
+                        navigate('/albumPage');
+                      } catch (err) {
+                        alert("Erreur lors de la suppression de l'album.");
+                        setShowDeleteAlbumModal(false);
+                      }
+                    }}
+                  >
+                    Supprimer
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+          {showQuitAlbumModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Quitter l'album ?</h3>
+                <p>Vous ne pourrez plus accéder à cet album.</p>
+                <div className="modal-actions">
+                  <button className="modal-cancel" onClick={() => setShowQuitAlbumModal(false)}>
+                    Annuler
+                  </button>
+                  <button
+                    className="modal-confirm"
+                    onClick={async () => {
+                      try {
+                        const token = getToken();
+                        await api.delete('/membrealbums', {
+                          headers: { Authorization: `Bearer ${token}` },
+                          data: {
+                            id_album,
+                            id_utilisateur: currentUserId
+                          },
+                        });
+                        navigate('/albumPage');
+                      } catch (err) {
+                        console.error(err.response?.data || err.message);
+                        alert("Erreur lors de la tentative de quitter l'album.");
+                      }
+                    }}
+                  >
+                    Quitter l’album
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  }
 
-export default MediaPage;
+  export default MediaPage;
