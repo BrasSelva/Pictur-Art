@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const verifyToken = require('../middlewares/auth');
 const { ajouterMembre } = require('../controllers/membreAlbumController');
+const MembreAlbum = require('../models/MembreAlbum');
+
 
 // Ajouter un membre à un album
 router.post('/', verifyToken, async (req, res) => {

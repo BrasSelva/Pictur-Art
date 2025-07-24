@@ -48,7 +48,7 @@ function UploadButton({ id_album, onUploadSuccess }) {
 
       setMessage('Upload réussi !');
       if (onUploadSuccess) onUploadSuccess(res.data);
-      e.target.value = null; // reset input
+      e.target.value = null; 
     } catch (err) {
       console.error('Erreur upload :', err.response || err.message || err);
       setMessage('Erreur lors de l’upload : ' + (err.response?.data?.message || err.message));

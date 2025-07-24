@@ -42,6 +42,7 @@ function AlbumPage() {
     });
   };
 
+  // Mise à jour de la couverture d’un album (upload image)
   const handleCoverChange = async (albumId) => {
     const fileInput = document.createElement('input');
     fileInput.type = 'file';
@@ -63,6 +64,7 @@ function AlbumPage() {
     fileInput.click();
   };
 
+  // Application des filtres sur la liste des albums
   const filteredAlbums = albums.filter((albumItem) => {
     const matchSearch = albumItem.nom.toLowerCase().includes(search.toLowerCase());
     const matchDate = !date || new Date(albumItem.date_creation).toISOString().startsWith(date);

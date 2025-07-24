@@ -31,7 +31,6 @@ function LoginPage() {
           token: response.data.token
         };
 
-        // Stocker dans localStorage
         localStorage.setItem('user', JSON.stringify(user));
 
         // Optionnel : tu peux utiliser response.data si tu veux

@@ -1,7 +1,5 @@
-// src/components/Footer.jsx
-import React from 'react';
 import { Link } from 'react-router-dom';
-import '../../assets/css/Footer.css'; // Tu peux styliser à ta façon
+import '../../assets/css/Footer.css'; 
 
 function Footer() {
   return (

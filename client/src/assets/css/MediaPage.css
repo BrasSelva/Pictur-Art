@@ -1,4 +1,4 @@
-/* RESET */
+
 * {
   box-sizing: border-box;
 }
@@ -11,7 +11,7 @@ html, body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* PAGE WRAPPER */
+
 .media-page-wrapper {
   display: flex;
   flex-direction: column;
@@ -27,7 +27,6 @@ html, body {
   }
 }
 
-/* CONTAINER PRINCIPAL */
 .media-container {
   flex: 1;
   padding: 1rem;
@@ -43,7 +42,7 @@ html, body {
   }
 }
 
-/* HEADER */
+
 .media-header .header-content {
   display: flex;
   justify-content: space-between;
@@ -82,7 +81,7 @@ html, body {
   max-width: 1400px;
 }
 
-/* CARTE MEDIA */
+
 .media-card {
   background: white;
   border-radius: 16px;
@@ -111,7 +110,6 @@ html, body {
   transform: scale(1.1);
 }
 
-/* INFO MEDIA */
 .media-info {
   padding: 1rem;
 }
@@ -154,7 +152,7 @@ html, body {
   gap: 0.3rem;
 }
 
-/* LIGHTBOX */
+
 .lightbox {
   position: fixed;
   inset: 0;
@@ -175,7 +173,6 @@ html, body {
   object-fit: contain;
 }
 
-/* MODALE SUPPRESSION */
 .modal-overlay {
   position: fixed;
   inset: 0;

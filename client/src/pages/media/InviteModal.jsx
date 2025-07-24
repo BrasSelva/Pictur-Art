@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import api from '../../api/api'; // On utilise la même instance que MediaPage
+import api from '../../api/api';
 import '../../assets/css/InviteModal.css';
 
 const InviteModal = ({ albumId }) => {

@@ -1,4 +1,4 @@
-/* Footer discret pour page bicolore */
+
 .footer {
   background: linear-gradient(to right, #ffffff 50%, #f9fafb 50%);
   padding: 1.5rem 3rem;
@@ -8,7 +8,7 @@
   border-top: 1px solid rgba(209, 213, 219, 0.3);
   margin-top: auto; /* Pour pousser le footer en bas */
   width: 100%;
-  position: relative; /* Changé de absolute à relative */
+  position: relative; 
 }
 
 .footer-links {
@@ -26,7 +26,7 @@
 }
 
 .footer-links a:hover {
-  color: #f97316; /* Reprend la couleur orange de ton thème */
+  color: #f97316; 
   text-decoration: none;
 }
 
@@ -35,10 +35,9 @@
   font-size: 0.8rem;
 }
 
-/* Version responsive */
 @media (max-width: 768px) {
   .footer {
-    background: #f9fafb; /* Uniforme sur mobile */
+    background: #f9fafb; 
     padding: 1rem;
   }
   

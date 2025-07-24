@@ -43,7 +43,6 @@
   list-style: disc;
 }
 
-/* Responsive */
 @media (max-width: 600px) {
   .apropos-header h1 {
     font-size: 2rem;

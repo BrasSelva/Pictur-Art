@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../../api/api';
 import { getToken } from '../../utils/auth';
 import '../../assets/css/Lightbox.css';
+import { FaTrash } from 'react-icons/fa';
 
 function MediaLightbox({ media, onClose, currentUserId, handlePrev, handleNext, slideDirection }) {
   const [commentaires, setCommentaires] = useState([]);
@@ -41,23 +42,23 @@ function MediaLightbox({ media, onClose, currentUserId, handlePrev, handleNext, 
 
   return (
     <div className="lightbox">
-    <div
-      className={`slide-media ${slideDirection}`}
-      onClick={(e) => e.stopPropagation()}
-    >
-      {media.type_media === 'photo' ? (
-        <img src={media.url} alt="zoom" />
-      ) : (
-        <video src={media.url} controls autoPlay />
-      )}
-    </div>
+      <div
+        className={`slide-media ${slideDirection}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {media.type_media === 'photo' ? (
+          <img src={media.url} alt="zoom" />
+        ) : (
+          <video src={media.url} controls autoPlay />
+        )}
+      </div>
 
-    <button className="lightbox-arrow lightbox-prev" onClick={(e) => { e.stopPropagation(); handlePrev(); }}>
-      &#x25C0;
-    </button>
-    <button className="lightbox-arrow lightbox-next" onClick={(e) => { e.stopPropagation(); handleNext(); }}>
-      &#x25B6;
-    </button>
+      <button className="lightbox-arrow lightbox-prev" onClick={(e) => { e.stopPropagation(); handlePrev(); }}>
+        &#x25C0;
+      </button>
+      <button className="lightbox-arrow lightbox-next" onClick={(e) => { e.stopPropagation(); handleNext(); }}>
+        &#x25B6;
+      </button>
 
 
       <div className="lightbox-comments">
@@ -67,17 +68,23 @@ function MediaLightbox({ media, onClose, currentUserId, handlePrev, handleNext, 
             <div key={c._id} className="comment">
               <strong>@{c.id_utilisateur.nom}</strong> : {c.contenu}
               {c.id_utilisateur._id === currentUserId && (
-                <button onClick={async () => {
-                  try {
-                    const token = getToken();
-                    await api.delete(`/commentaires/${c._id}`, {
-                      headers: { Authorization: `Bearer ${token}` }
-                    });
-                    fetchCommentaires();
-                  } catch (err) {
-                    console.error("Erreur suppression commentaire", err);
-                  }
-                }}>❌</button>
+                <button
+                  onClick={async () => {
+                    try {
+                      const token = getToken();
+                      await api.delete(`/commentaires/${c._id}`, {
+                        headers: { Authorization: `Bearer ${token}` }
+                      });
+                      fetchCommentaires();
+                    } catch (err) {
+                      console.error("Erreur suppression commentaire", err);
+                    }
+                  }}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#e3342f', marginLeft: '8px' }}
+                  title="Supprimer le commentaire"
+                >
+                  <FaTrash />
+                </button>
               )}
             </div>
           ))}

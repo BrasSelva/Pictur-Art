@@ -1,4 +1,4 @@
-import React from 'react';
+
 import '../../assets/css/SearchBar.css';
 
 function SearchBar({ search, setSearch, date, setDate, auteur, setAuteur, album, setAlbum }) {

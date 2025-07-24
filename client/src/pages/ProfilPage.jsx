@@ -24,7 +24,6 @@ const ProfilPage = () => {
         setUtilisateur(user);
       } catch (error) {
         console.error("Erreur récupération profil :", error);
-        // navigate('/login');
       }
     };
 

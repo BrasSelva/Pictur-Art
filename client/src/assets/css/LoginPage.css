@@ -1,19 +1,17 @@
 
-/* Mise à jour du container principal */
 .login-container {
   min-height: 100vh;
   display: flex;
-  flex-direction: column; /* Ajouté pour organiser verticalement */
+  flex-direction: column; 
   background-color: #f9fafb;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 .login-content {
   display: flex;
-  flex: 1; /* Prend tout l'espace disponible */
+  flex: 1;
 }
 
-/* Les sections restent identiques mais dans le nouveau wrapper */
 .login-content .left-section {
   flex: 1;
   background-color: white;
@@ -71,7 +69,7 @@
   text-align: center;
 }
 
-/* Section droite */
+
 .login-container .right-section {
   flex: 1;
   background-color: #f9fafb;
