@@ -9,7 +9,6 @@ import EmojiReactionButton from '../../components/media/EmojiReactionButton';
 import MediaLightbox from '../../components/media/MediaLightbox';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
-
 import InviteModal from './InviteModal';
 
 function MediaPage() {
@@ -25,7 +24,6 @@ function MediaPage() {
   const [mediaToDelete, setMediaToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
 
   const [search, setSearch] = useState('');
   const [date, setDate] = useState('');
@@ -33,23 +31,25 @@ function MediaPage() {
   const [albumFilter, setAlbumFilter] = useState('');
 
   const fetchMedias = async () => {
-    const token = getToken();
-    const res = await api.get(`/medias/album/${id_album}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const token = getToken();
+      const res = await api.get(`/medias/album/${id_album}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const mediasFetched = res.data;
+      setMedias(mediasFetched);
 
-    const mediasFetched = res.data;
-    setMedias(mediasFetched);
-
-    // Charger les réactions pour chaque média
-    const map = {};
-    await Promise.all(
-      mediasFetched.map(async (media) => {
-        const r = await api.get(`/reactions/media/${media._id}`);
-        map[media._id] = r.data;
-      })
-    );
-    setReactionsMap(map);
+      const map = {};
+      await Promise.all(
+        mediasFetched.map(async (media) => {
+          const r = await api.get(`/reactions/media/${media._id}`);
+          map[media._id] = r.data;
+        })
+      );
+      setReactionsMap(map);
+    } catch (err) {
+      console.error('Erreur lors du chargement des médias:', err);
+    }
   };
 
   useEffect(() => {
@@ -57,22 +57,18 @@ function MediaPage() {
       try {
         const token = getToken();
         if (!token) throw new Error('Non connecté');
-
         const albumRes = await api.get(`/albums/${id_album}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setAlbum(albumRes.data);
-
         await fetchMedias();
         setLoading(false);
       } catch (err) {
         navigate('/albumPage');
       }
     };
-
     verifierAcces();
   }, [id_album, navigate]);
-
 
   const handleDelete = async () => {
     try {
@@ -88,35 +84,9 @@ function MediaPage() {
   };
 
   const handleReact = async (mediaId, emojiId) => {
-    const token = getToken();
-    const reactions = reactionsMap[mediaId] || [];
-    const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
-
-    try {
-      if (currentUserReaction && currentUserReaction.id_emoji._id === emojiId) {
-        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        if (currentUserReaction) {
-          await api.post('/reactions/toggle', {
-            id_media: mediaId,
-            id_emoji: currentUserReaction.id_emoji._id
-          }, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-        }
-
-        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-
-      await fetchMedias();
-    } catch (err) {
-      console.error('Erreur lors de la réaction :', err);
-    }
+    await fetchMedias(); // Recharge toutes les réactions à jour
   };
+
   const filteredMedias = medias.filter((media) => {
     const matchesSearch = search === '' || media.nom?.toLowerCase().includes(search.toLowerCase());
     const matchesDate = date === '' || media.date?.startsWith(date);
@@ -140,14 +110,12 @@ function MediaPage() {
         setAlbum={setAlbumFilter}
       />
 
-      <div className="media-container" style={{ flex: 1 }}>
+      <div className="media-container">
         <header className="media-header">
           <div className="header-content">
-            <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
-
+            <h2 className="page-title">{album?.nom || 'Album'}</h2>
             <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
 
-            {/* Boutons visibles uniquement pour le créateur de l’album */}
             {album?.id_utilisateur?.toString() === currentUserId && (
               <>
                 <InviteModal albumId={id_album} />
@@ -174,14 +142,16 @@ function MediaPage() {
                 {media.type_media === 'photo' ? (
                   <img src={media.url} alt="media" onClick={() => setSelectedMedia(media)} />
                 ) : (
-                  <video src={media.url} muted preload="metadata" onClick={() => setSelectedMedia(media)} />
+                  <video src={media.url} muted onClick={() => setSelectedMedia(media)} />
                 )}
 
                 <div className="media-info">
                   <p className="media-user"><FaUserCircle /> @{media.id_utilisateur?.nom || 'Inconnu'}</p>
 
                   {currentUserReaction && (
-                    <div className="user-reaction">Votre réaction : {currentUserReaction.id_emoji.emoji}</div>
+                    <div className="user-reaction">
+                      Votre réaction : {currentUserReaction.id_emoji.emoji}
+                    </div>
                   )}
 
                   {otherReactions.length > 0 && (
