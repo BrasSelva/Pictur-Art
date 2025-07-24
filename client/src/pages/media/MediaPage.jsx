@@ -24,6 +24,10 @@ function MediaPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [search, setSearch] = useState('');
+  const [date, setDate] = useState('');
+  const [auteur, setAuteur] = useState('');
+  const [albumFilter, setAlbumFilter] = useState('');
 
   const currentUserId = getUserIdFromToken();
 
