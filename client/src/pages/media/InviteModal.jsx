@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import api from '../../api/api'; // On utilise la même instance que MediaPage
 import '../../assets/css/InviteModal.css';
 
 const InviteModal = ({ albumId }) => {
@@ -10,39 +11,39 @@ const InviteModal = ({ albumId }) => {
     setMessage('');
     try {
       const token = localStorage.getItem('token');
-
-      const userRes = await fetch(`/api/utilisateurs/by-pseudo/${pseudo}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!userRes.ok) {
-        setMessage('Utilisateur introuvable');
+      if (!token) {
+        setMessage('Utilisateur non connecté');
         return;
       }
 
-      const utilisateur = await userRes.json();
-
-      const res = await fetch(`/api/membrealbums`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          id_utilisateur: utilisateur._id,
-          id_album: albumId,
-        }),
+      // Vérifier si l'utilisateur existe via son pseudo
+      const userRes = await api.get(`/utilisateurs/by-pseudo/${pseudo}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
 
-      const data = await res.json();
-      if (res.ok) {
+      const utilisateur = userRes.data;
+
+      // Envoyer l'invitation
+      const res = await api.post(
+        `/membrealbums`,
+        { id_utilisateur: utilisateur._id, id_album: albumId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.status === 201) {
         setMessage('Invitation envoyée !');
         setPseudo('');
       } else {
-        setMessage(data.message || 'Erreur');
+        setMessage(res.data.message || 'Erreur');
       }
     } catch (err) {
-      setMessage('Erreur réseau');
+      if (err.response && err.response.status === 404) {
+        setMessage('Utilisateur introuvable');
+      } else if (err.response && err.response.data.message) {
+        setMessage(err.response.data.message);
+      } else {
+        setMessage('Erreur réseau');
+      }
     }
   };
 

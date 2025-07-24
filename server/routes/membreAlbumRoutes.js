@@ -1,25 +1,27 @@
 const express = require('express');
 const router = express.Router();
 const MembreAlbum = require('../models/MembreAlbum');
+const verifyToken = require('../middlewares/auth');
 
-router.post('/', async (req, res) => {
+
+// Ajouter un membre à un album
+router.post('/', verifyToken, async (req, res) => {
   try {
     const { id_utilisateur, id_album } = req.body;
-    if (!id_utilisateur || !id_album) {
-      return res.status(400).json({ message: 'id_utilisateur et id_album requis' });
+
+    // Vérifie s’il est déjà membre
+    const dejaMembre = await MembreAlbum.findOne({ id_utilisateur, id_album });
+    if (dejaMembre) {
+      return res.status(400).json({ message: 'Cet utilisateur est déjà membre de cet album.' });
     }
 
-    // Vérifie si ce membre est déjà dans l'album pour éviter les doublons
-    const existe = await MembreAlbum.findOne({ id_utilisateur, id_album });
-    if (existe) {
-      return res.status(409).json({ message: 'Déjà membre de cet album' });
-    }
+    const nouveauMembre = new MembreAlbum({ id_utilisateur, id_album });
+    await nouveauMembre.save();
 
-    const membre = new MembreAlbum({ id_utilisateur, id_album });
-    await membre.save();
-    res.status(201).json(membre);
+    res.status(201).json(nouveauMembre);
   } catch (err) {
-    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+    console.error('Erreur ajout membre album:', err);
+    res.status(500).json({ message: 'Erreur serveur' });
   }
 });
 
