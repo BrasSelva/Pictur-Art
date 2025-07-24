@@ -32,15 +32,25 @@
     top: 0;
     z-index: 100;
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    white-space: nowrap; /* empêche le retour à la ligne */
   }
   
   .emoji-item {
     font-size: 1.4rem;
     cursor: pointer;
-    transition: transform 0.1s;
+    transition: transform 0.1s, background 0.2s;
+    border-radius: 6px;
+    padding: 0.2rem;
   }
   
   .emoji-item:hover {
     transform: scale(1.3);
+    background: #f3f4f6;
+  }
+  
+  .emoji-item.selected {
+    background-color: #e0e7ff;
+    box-shadow: 0 0 0 2px #6366f1 inset;
+    border-radius: 6px;
   }
   

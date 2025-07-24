@@ -14,6 +14,7 @@ import MediaPage from '../pages/media/MediaPage';
 import CodeTemporaire from '../pages/login-register/Temporaire';
 import NouveauMotDePasse from '../pages/login-register/NouveauMotDePasse';
 import CreateAlbum from '../pages/album/CreateAlbum';
+import Contact from '../pages/Contact/Contact';
 import MentionLegales from '../pages/reglementation/MentionLegales';
 import CguPage from '../pages/reglementation/CguPage';
 import APropos from '../pages/reglementation/APropos';
@@ -31,6 +32,7 @@ function AppRouter() {
       <Route path="/MentionLegales" element={<MentionLegales />} />
       <Route path="/CguPage" element={<CguPage />} />
       <Route path="/APropos" element={<APropos />} />
+      <Route path="/contact" element={<Contact />} />
 
       {/* Routes protégées */}
       <Route
