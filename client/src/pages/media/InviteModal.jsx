@@ -1,40 +1,55 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
+import api from '../../api/api'; // On utilise la même instance que MediaPage
+import '../../assets/css/InviteModal.css';
 
 const InviteModal = ({ albumId }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [pseudo, setPseudo] = useState("");
-  const [message, setMessage] = useState("");
+  const [pseudo, setPseudo] = useState('');
+  const [message, setMessage] = useState('');
 
   const handleInvite = async () => {
+    setMessage('');
     try {
-      const res = await fetch(`/api/albums/${albumId}/invite`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
-        body: JSON.stringify({ pseudo }),
+      const token = localStorage.getItem('token');
+      if (!token) {
+        setMessage('Utilisateur non connecté');
+        return;
+      }
+
+      // Vérifier si l'utilisateur existe via son pseudo
+      const userRes = await api.get(`/utilisateurs/by-pseudo/${pseudo}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json();
-      if (res.ok) {
-        setMessage("✅ Invitation envoyée !");
-        setPseudo("");
+
+      const utilisateur = userRes.data;
+
+      // Envoyer l'invitation
+      const res = await api.post(
+        `/membrealbums`,
+        { id_utilisateur: utilisateur._id, id_album: albumId },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      if (res.status === 201) {
+        setMessage('Invitation envoyée !');
+        setPseudo('');
       } else {
-        setMessage(data.message || "❌ Erreur");
+        setMessage(res.data.message || 'Erreur');
       }
     } catch (err) {
-      setMessage("❌ Erreur réseau");
+      if (err.response && err.response.status === 404) {
+        setMessage('Utilisateur introuvable');
+      } else if (err.response && err.response.data.message) {
+        setMessage(err.response.data.message);
+      } else {
+        setMessage('Erreur réseau');
+      }
     }
   };
 
   return (
     <>
-      <button
-        className="create-album-btn"
-        style={{ position: "fixed", top: "1rem", right: "1rem" }}
-        onClick={() => setIsOpen(true)}
-      >
-        <span className="btn-icon"></span>
+      <button className="Invite-btn" onClick={() => setIsOpen(true)}>
         Inviter des amis
       </button>
 

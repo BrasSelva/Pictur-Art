@@ -13,4 +13,18 @@ router.post('/contact', contact);
 
 router.put('/modifier', modifierProfil);
 
+// GET /api/utilisateurs/by-pseudo/:pseudo
+router.get('/by-pseudo/:pseudo', verifyToken, async (req, res) => {
+  try {
+    const user = await Utilisateur.findOne({ nom: req.params.pseudo });
+    if (!user) return res.status(404).json({ message: 'Utilisateur introuvable' });
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+});
+
+
+
 module.exports = router;
