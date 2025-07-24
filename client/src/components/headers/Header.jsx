@@ -11,7 +11,7 @@ function Header() {
 
   return (
     <header className="header">
-      <div className="logo-section">
+      <div className="logo-section" onClick={() => navigate('/timeline')} style={{ cursor: 'pointer' }}>
         <img src="/img/logoPicturArt.png" alt="logo" />
       </div>
 

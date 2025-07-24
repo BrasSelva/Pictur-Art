@@ -105,8 +105,8 @@ body {
   gap: 6px;
 }
 
-.media-album {
-  color: #666;
+.media-album, .media-date {
+  font-weight: bold;
   display: flex;
   align-items: center;
   gap: 6px;

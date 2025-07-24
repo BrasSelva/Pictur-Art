@@ -71,9 +71,18 @@ function Timeline() {
                 <FaCommentDots />
               </div>
             </div>
-            <p className="media-album" style={{ fontSize: '0.85rem', color: '#666' }}>
-              Album : {media.album?.nom || 'Inconnu'}
+            <div className="media-info" style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <p className="media-album">
+              Album : <strong>{media.id_album?.nom || 'Inconnu'}</strong>
             </p>
+            <p className="media-date">
+              {media.date_publication
+                ? new Date(media.date_publication).toLocaleDateString('fr-FR', {
+                    day: '2-digit', month: 'long', year: 'numeric'
+                  })
+                : 'Date inconnue'}
+            </p>
+            </div>
           </div>
         ))}
       </div>

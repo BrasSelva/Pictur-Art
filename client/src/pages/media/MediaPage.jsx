@@ -17,6 +17,7 @@
     const [mediaToDelete, setMediaToDelete] = useState(null);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
     const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
+    const [showQuitAlbumModal, setShowQuitAlbumModal] = useState(false);
     const [slideDirection, setSlideDirection] = useState(null);
 
     const currentUserId = getUserIdFromToken();
@@ -84,7 +85,6 @@
       setSelectedIndex((prevIndex) => (prevIndex + 1) % medias.length);
     };
 
-
     if (loading) return <p>Chargement...</p>;
 
     return (
@@ -94,13 +94,21 @@
             <div className="header-content">
               <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
               <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
-              {album?.id_utilisateur?.toString() === currentUserId && (
+              {album?.id_utilisateur?.toString() === currentUserId ? (
                 <button
                   className="modal-confirm"
                   style={{ background: 'crimson', color: 'white' }}
                   onClick={() => setShowDeleteAlbumModal(true)}
                 >
                   Supprimer l'album
+                </button>
+              ) : (
+                <button
+                  className="modal-confirm"
+                  style={{ background: 'gray', color: 'white' }}
+                  onClick={() => setShowQuitAlbumModal(true)}
+                >
+                  Quitter l’album
                 </button>
               )}
             </div>
@@ -214,6 +222,40 @@
                     }}
                   >
                     Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {showQuitAlbumModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Quitter l'album ?</h3>
+                <p>Vous ne pourrez plus accéder à cet album.</p>
+                <div className="modal-actions">
+                  <button className="modal-cancel" onClick={() => setShowQuitAlbumModal(false)}>
+                    Annuler
+                  </button>
+                  <button
+                    className="modal-confirm"
+                    onClick={async () => {
+                      try {
+                        const token = getToken();
+                        await api.delete('/membrealbums', {
+                          headers: { Authorization: `Bearer ${token}` },
+                          data: {
+                            id_album,
+                            id_utilisateur: currentUserId
+                          },
+                        });
+                        navigate('/albumPage');
+                      } catch (err) {
+                        console.error(err.response?.data || err.message);
+                        alert("Erreur lors de la tentative de quitter l'album.");
+                      }
+                    }}
+                  >
+                    Quitter l’album
                   </button>
                 </div>
               </div>

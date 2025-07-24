@@ -6,7 +6,7 @@ const cors = require('cors');
 const utilisateurRoutes = require('./routes/utilisateurRoutes');
 const albumRoutes = require('./routes/albumRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
-const membreAlbumRoutes = require('./routes/membreAlbumRoutes');
+const membreAlbumRoutes = require('./routes/membrealbumRoutes')
 
 dotenv.config();
 const app = express();
