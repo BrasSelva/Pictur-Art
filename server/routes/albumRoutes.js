@@ -4,6 +4,8 @@ const Album = require('../models/Album');
 const verifyToken = require('../middlewares/auth');
 const MembreAlbum = require('../models/MembreAlbum');
 const upload = require('../middlewares/multer');
+const Utilisateur = require('../models/Utilisateur');
+
 
 // GET /albums : Récupère les albums de l'utilisateur connecté
 router.get('/', verifyToken, async (req, res) => {
@@ -118,28 +120,5 @@ router.patch('/:id/couverture', verifyToken, upload.single('couverture'), async 
   }
 });
 
-
-// POST /api/albums/:id/invite
-router.post("/:id/invite", verifyToken, async (req, res) => {
-  const { pseudo } = req.body;
-  const albumId = req.params.id;
-
-  try {
-    const userToInvite = await Utilisateur.findOne({ pseudo });
-    if (!userToInvite) return res.status(404).json({ message: "Utilisateur introuvable" });
-
-    const album = await Album.findById(albumId);
-    if (!album) return res.status(404).json({ message: "Album introuvable" });
-
-    if (!album.membres.includes(userToInvite._id)) {
-      album.membres.push(userToInvite._id);
-      await album.save();
-    }
-
-    res.json({ message: "Invitation envoyée avec succès" });
-  } catch (err) {
-    res.status(500).json({ message: "Erreur serveur" });
-  }
-});
 
 module.exports = router;

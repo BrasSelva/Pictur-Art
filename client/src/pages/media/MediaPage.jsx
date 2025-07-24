@@ -10,8 +10,7 @@ import MediaLightbox from '../../components/media/MediaLightbox';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
 
-import InviteModal from '../../pages/media/InviteModal';
-
+import InviteModal from './InviteModal';
 
 function MediaPage() {
   const { id_album } = useParams();
@@ -91,6 +90,36 @@ function MediaPage() {
     }
   };
 
+  const handleReact = async (mediaId, emojiId) => {
+    const token = getToken();
+    const reactions = reactionsMap[mediaId] || [];
+    const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
+
+    try {
+      if (currentUserReaction && currentUserReaction.id_emoji._id === emojiId) {
+        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      } else {
+        if (currentUserReaction) {
+          await api.post('/reactions/toggle', {
+            id_media: mediaId,
+            id_emoji: currentUserReaction.id_emoji._id
+          }, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+        }
+
+        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+      }
+
+      await fetchMedias();
+    } catch (err) {
+      console.error('Erreur lors de la réaction :', err);
+    }
+  };
   const filteredMedias = medias.filter((media) => {
     const matchesSearch = search === '' || media.nom?.toLowerCase().includes(search.toLowerCase());
     const matchesDate = date === '' || media.date?.startsWith(date);
@@ -121,20 +150,21 @@ function MediaPage() {
 
             <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
 
-            <InviteModal albumId={id_album} /> {/* ← ce bouton apparaîtra avant celui-ci */}
-
+            {/* Boutons visibles uniquement pour le créateur de l’album */}
             {album?.id_utilisateur?.toString() === currentUserId && (
-              <button
-                className="modal-confirm"
-                style={{ background: 'crimson', color: 'white' }}
-                onClick={() => setShowDeleteAlbumModal(true)}
-              >
-                Supprimer l'album
-              </button>
+              <>
+                <InviteModal albumId={id_album} />
+                <button
+                  className="modal-confirm"
+                  style={{ background: 'crimson', color: 'white' }}
+                  onClick={() => setShowDeleteAlbumModal(true)}
+                >
+                  Supprimer l'album
+                </button>
+              </>
             )}
           </div>
         </header>
-
 
         <div className="media-grid">
           {filteredMedias.map((media) => {
