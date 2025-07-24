@@ -36,7 +36,7 @@ function LoginPage() {
 
         // Optionnel : tu peux utiliser response.data si tu veux
         setTimeout(() => {
-          navigate('/albumPage', { state: { successMessage: "Vous êtes connecté !" } });
+          navigate('/timeline', { state: { successMessage: "Vous êtes connecté !" } });
         }, 1000);
       } catch (error) {
         console.error("Erreur lors de la tentative de connexion:", error);

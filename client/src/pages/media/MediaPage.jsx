@@ -9,114 +9,112 @@ import EmojiReactionButton from '../../components/media/EmojiReactionButton';
 import MediaLightbox from '../../components/media/MediaLightbox';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
-
 import InviteModal from './InviteModal';
 
-function MediaPage() {
-  const { id_album } = useParams();
-  const navigate = useNavigate();
-  const currentUserId = getUserIdFromToken();
+  function MediaPage() {
+    const { id_album } = useParams();
+    const navigate = useNavigate();
+    const currentUserId = getUserIdFromToken();
 
-  const [medias, setMedias] = useState([]);
-  const [album, setAlbum] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [reactionsMap, setReactionsMap] = useState({});
-  const [selectedMedia, setSelectedMedia] = useState(null);
-  const [mediaToDelete, setMediaToDelete] = useState(null);
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+    const [medias, setMedias] = useState([]);
+    const [selectedIndex, setSelectedIndex] = useState(null);
+    const [album, setAlbum] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const [mediaToDelete, setMediaToDelete] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
+    const [showQuitAlbumModal, setShowQuitAlbumModal] = useState(false);
+    const [slideDirection, setSlideDirection] = useState(null);
+    const [reactionsMap, setReactionsMap] = useState({});
+    const [selectedMedia, setSelectedMedia] = useState(null);
+    const [search, setSearch] = useState('');
+    const [date, setDate] = useState('');
+    const [auteur, setAuteur] = useState('');
+    const [albumFilter, setAlbumFilter] = useState('');
 
-  const [search, setSearch] = useState('');
-  const [date, setDate] = useState('');
-  const [auteur, setAuteur] = useState('');
-  const [albumFilter, setAlbumFilter] = useState('');
+    
+
 
   const fetchMedias = async () => {
-    const token = getToken();
-    const res = await api.get(`/medias/album/${id_album}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
+    try {
+      const token = getToken();
+      const res = await api.get(`/medias/album/${id_album}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const mediasFetched = res.data;
+      setMedias(mediasFetched);
 
-    const mediasFetched = res.data;
-    setMedias(mediasFetched);
-
-    // Charger les réactions pour chaque média
-    const map = {};
-    await Promise.all(
-      mediasFetched.map(async (media) => {
-        const r = await api.get(`/reactions/media/${media._id}`);
-        map[media._id] = r.data;
-      })
-    );
-    setReactionsMap(map);
+      const map = {};
+      await Promise.all(
+        mediasFetched.map(async (media) => {
+          const r = await api.get(`/reactions/media/${media._id}`);
+          map[media._id] = r.data;
+        })
+      );
+      setReactionsMap(map);
+    } catch (err) {
+      console.error('Erreur lors du chargement des médias:', err);
+    }
   };
 
-  useEffect(() => {
-    const verifierAcces = async () => {
+    useEffect(() => {
+      const verifierAcces = async () => {
+        try {
+          const token = getToken();
+          if (!token) throw new Error('Non connecté');
+
+          await api.get(`/medias/album/${id_album}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+
+          const albumRes = await api.get(`/albums/${id_album}`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setAlbum(albumRes.data);
+
+          await fetchMedias();
+
+          setLoading(false);
+        } catch (err) {
+          navigate('/albumPage');
+        }
+      };
+
+      verifierAcces();
+    }, [id_album, navigate]);
+
+  const handleDelete = async () => {
+      if (!mediaToDelete) return;
       try {
         const token = getToken();
         if (!token) throw new Error('Non connecté');
 
-        const albumRes = await api.get(`/albums/${id_album}`, {
+        await api.delete(`/medias/${mediaToDelete}`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        setAlbum(albumRes.data);
 
-        await fetchMedias();
-        setLoading(false);
+        setMedias((prev) => prev.filter((m) => m._id !== mediaToDelete));
+        setShowDeleteModal(false);
+        setMediaToDelete(null);
       } catch (err) {
-        navigate('/albumPage');
+        alert('Erreur lors de la suppression');
       }
     };
 
-    verifierAcces();
-  }, [id_album, navigate]);
-
-
-  const handleDelete = async () => {
-    try {
-      const token = getToken();
-      await api.delete(`/medias/${mediaToDelete}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      await fetchMedias();
-      setShowDeleteModal(false);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
   const handleReact = async (mediaId, emojiId) => {
-    const token = getToken();
-    const reactions = reactionsMap[mediaId] || [];
-    const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
+    await fetchMedias(); // Recharge toutes les réactions à jour
+    };
 
-    try {
-      if (currentUserReaction && currentUserReaction.id_emoji._id === emojiId) {
-        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      } else {
-        if (currentUserReaction) {
-          await api.post('/reactions/toggle', {
-            id_media: mediaId,
-            id_emoji: currentUserReaction.id_emoji._id
-          }, {
-            headers: { Authorization: `Bearer ${token}` },
-          });
-        }
-
-        await api.post('/reactions/toggle', { id_media: mediaId, id_emoji: emojiId }, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-      }
-
-      await fetchMedias();
-    } catch (err) {
-      console.error('Erreur lors de la réaction :', err);
-    }
+    const handlePrev = () => {
+    setSlideDirection('left');
+    setSelectedIndex((prevIndex) => (prevIndex - 1 + medias.length) % medias.length);
   };
+
+  const handleNext = () => {
+    setSlideDirection('right');
+    setSelectedIndex((prevIndex) => (prevIndex + 1) % medias.length);
+  };
+
   const filteredMedias = medias.filter((media) => {
     const matchesSearch = search === '' || media.nom?.toLowerCase().includes(search.toLowerCase());
     const matchesDate = date === '' || media.date?.startsWith(date);
@@ -125,7 +123,7 @@ function MediaPage() {
     return matchesSearch && matchesDate && matchesAuteur && matchesAlbum;
   });
 
-  if (loading) return <p>Chargement...</p>;
+    if (loading) return <p>Chargement...</p>;
 
   return (
     <div className="media-page-wrapper">
@@ -140,14 +138,12 @@ function MediaPage() {
         setAlbum={setAlbumFilter}
       />
 
-      <div className="media-container" style={{ flex: 1 }}>
+      <div className="media-container">
         <header className="media-header">
           <div className="header-content">
-            <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
-
+            <h2 className="page-title">{album?.nom || 'Album'}</h2>
             <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
 
-            {/* Boutons visibles uniquement pour le créateur de l’album */}
             {album?.id_utilisateur?.toString() === currentUserId && (
               <>
                 <InviteModal albumId={id_album} />
@@ -164,7 +160,7 @@ function MediaPage() {
         </header>
 
         <div className="media-grid">
-          {filteredMedias.map((media) => {
+          {filteredMedias.map((media, i) => {
             const reactions = reactionsMap[media._id] || [];
             const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
             const otherReactions = reactions.filter(r => r.id_utilisateur._id !== currentUserId);
@@ -172,16 +168,30 @@ function MediaPage() {
             return (
               <div key={media._id} className="media-card">
                 {media.type_media === 'photo' ? (
-                  <img src={media.url} alt="media" onClick={() => setSelectedMedia(media)} />
+                  <img
+                    src={media.url}
+                    alt="media"
+                    onClick={() => setSelectedIndex(i)}
+                    style={{ cursor: 'pointer' }}
+                  />
                 ) : (
-                  <video src={media.url} muted preload="metadata" onClick={() => setSelectedMedia(media)} />
+                  <video
+                    src={media.url}
+                    onClick={() => setSelectedIndex(i)}
+                    style={{ cursor: 'pointer', maxHeight: '200px' }}
+                    muted
+                    preload="metadata"
+                    controls={false}
+                  />
                 )}
 
                 <div className="media-info">
                   <p className="media-user"><FaUserCircle /> @{media.id_utilisateur?.nom || 'Inconnu'}</p>
 
                   {currentUserReaction && (
-                    <div className="user-reaction">Votre réaction : {currentUserReaction.id_emoji.emoji}</div>
+                    <div className="user-reaction">
+                      Votre réaction : {currentUserReaction.id_emoji.emoji}
+                    </div>
                   )}
 
                   {otherReactions.length > 0 && (
@@ -197,14 +207,15 @@ function MediaPage() {
                   <EmojiReactionButton mediaId={media._id} onReact={handleReact} />
 
                   <div className="media-icons">
-                    <FaCommentDots style={{ cursor: 'default' }} />
-                    {media.id_utilisateur?._id === currentUserId && (
+                    <FaCommentDots />
+                    {media.id_utilisateur?._id?.toString() === currentUserId && (
                       <FaTrashAlt
                         style={{ cursor: 'pointer', color: 'red' }}
                         onClick={() => {
                           setMediaToDelete(media._id);
                           setShowDeleteModal(true);
                         }}
+                        title="Supprimer ce média"
                       />
                     )}
                   </div>
@@ -214,29 +225,108 @@ function MediaPage() {
           })}
         </div>
 
-        {selectedMedia && (
-          <MediaLightbox
-            media={selectedMedia}
-            onClose={() => setSelectedMedia(null)}
-            currentUserId={currentUserId}
-          />
-        )}
+          {selectedIndex !== null && (
+            <MediaLightbox
+              media={medias[selectedIndex]}
+              onClose={() => setSelectedIndex(null)}
+              currentUserId={currentUserId}
+              handlePrev={handlePrev}
+              handleNext={handleNext}
+              slideDirection={slideDirection}
+              key={medias[selectedIndex]?._id}
+            />
+          )}
 
-        {showDeleteModal && (
-          <div className="modal-overlay">
-            <div className="modal">
-              <h3>Supprimer le média ?</h3>
-              <p>Cette action est irréversible.</p>
-              <div className="modal-actions">
-                <button className="modal-cancel" onClick={() => setShowDeleteModal(false)}>Annuler</button>
-                <button className="modal-confirm" onClick={handleDelete}>Supprimer</button>
+          {showDeleteModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Supprimer le média ?</h3>
+                <p>Cette action est irréversible.</p>
+                <div className="modal-actions">
+                  <button
+                    className="modal-cancel"
+                    onClick={() => {
+                      setShowDeleteModal(false);
+                      setMediaToDelete(null);
+                    }}
+                  >
+                    Annuler
+                  </button>
+                  <button className="modal-confirm" onClick={handleDelete}>
+                    Supprimer
+                  </button>
+                </div>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
+          )}
 
-export default MediaPage;
+          {showDeleteAlbumModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Supprimer l'album ?</h3>
+                <p>Cette action supprimera également tous les médias associés.</p>
+                <div className="modal-actions">
+                  <button className="modal-cancel" onClick={() => setShowDeleteAlbumModal(false)}>
+                    Annuler
+                  </button>
+                  <button
+                    className="modal-confirm"
+                    onClick={async () => {
+                      try {
+                        const token = getToken();
+                        await api.delete(`/albums/${id_album}`, {
+                          headers: { Authorization: `Bearer ${token}` },
+                        });
+                        navigate('/albumPage');
+                      } catch (err) {
+                        alert("Erreur lors de la suppression de l'album.");
+                        setShowDeleteAlbumModal(false);
+                      }
+                    }}
+                  >
+                    Supprimer
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {showQuitAlbumModal && (
+            <div className="modal-overlay">
+              <div className="modal">
+                <h3>Quitter l'album ?</h3>
+                <p>Vous ne pourrez plus accéder à cet album.</p>
+                <div className="modal-actions">
+                  <button className="modal-cancel" onClick={() => setShowQuitAlbumModal(false)}>
+                    Annuler
+                  </button>
+                  <button
+                    className="modal-confirm"
+                    onClick={async () => {
+                      try {
+                        const token = getToken();
+                        await api.delete('/membrealbums', {
+                          headers: { Authorization: `Bearer ${token}` },
+                          data: {
+                            id_album,
+                            id_utilisateur: currentUserId
+                          },
+                        });
+                        navigate('/albumPage');
+                      } catch (err) {
+                        console.error(err.response?.data || err.message);
+                        alert("Erreur lors de la tentative de quitter l'album.");
+                      }
+                    }}
+                  >
+                    Quitter l’album
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  export default MediaPage;

@@ -123,10 +123,15 @@ html, body {
   gap: 6px;
 }
 
-.media-date {
-  margin-top: 0.5rem;
-  font-size: 0.85rem;
-  color: #999;
+.media-album {
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .media-icons {
@@ -152,7 +157,7 @@ html, body {
 /* LIGHTBOX */
 .lightbox {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  inset: 0;
   background: rgba(0, 0, 0, 0.85);
   display: flex;
   justify-content: center;
@@ -226,4 +231,44 @@ html, body {
 
 .modal-confirm:hover {
   background: #dc2626;
+}
+
+.slide-media {
+  max-width: 90vw;
+  max-height: 90vh;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0,0,0,0.7);
+  object-fit: contain;
+  position: relative;
+  animation: slide-in 0.4s ease;
+}
+
+.slide-media.left {
+  animation-name: slide-from-left;
+}
+
+.slide-media.right {
+  animation-name: slide-from-right;
+}
+
+@keyframes slide-from-left {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-from-right {
+  from {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
