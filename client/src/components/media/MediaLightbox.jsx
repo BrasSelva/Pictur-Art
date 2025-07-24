@@ -3,7 +3,7 @@ import api from '../../api/api';
 import { getToken } from '../../utils/auth';
 import '../../assets/css/Lightbox.css';
 
-function MediaLightbox({ media, onClose, currentUserId }) {
+function MediaLightbox({ media, onClose, currentUserId, handlePrev, handleNext, slideDirection }) {
   const [commentaires, setCommentaires] = useState([]);
   const [newComment, setNewComment] = useState('');
 
@@ -41,11 +41,24 @@ function MediaLightbox({ media, onClose, currentUserId }) {
 
   return (
     <div className="lightbox">
+    <div
+      className={`slide-media ${slideDirection}`}
+      onClick={(e) => e.stopPropagation()}
+    >
       {media.type_media === 'photo' ? (
         <img src={media.url} alt="zoom" />
       ) : (
         <video src={media.url} controls autoPlay />
       )}
+    </div>
+
+    <button className="lightbox-arrow lightbox-prev" onClick={(e) => { e.stopPropagation(); handlePrev(); }}>
+      &#x25C0;
+    </button>
+    <button className="lightbox-arrow lightbox-next" onClick={(e) => { e.stopPropagation(); handleNext(); }}>
+      &#x25B6;
+    </button>
+
 
       <div className="lightbox-comments">
         <h3>Commentaires</h3>

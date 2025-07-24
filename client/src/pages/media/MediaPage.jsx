@@ -31,6 +31,7 @@ import InviteModal from './InviteModal';
     const [date, setDate] = useState('');
     const [auteur, setAuteur] = useState('');
     const [albumFilter, setAlbumFilter] = useState('');
+
     
 
 
@@ -102,6 +103,16 @@ import InviteModal from './InviteModal';
 
   const handleReact = async (mediaId, emojiId) => {
     await fetchMedias(); // Recharge toutes les réactions à jour
+    };
+
+    const handlePrev = () => {
+    setSlideDirection('left');
+    setSelectedIndex((prevIndex) => (prevIndex - 1 + medias.length) % medias.length);
+  };
+
+  const handleNext = () => {
+    setSlideDirection('right');
+    setSelectedIndex((prevIndex) => (prevIndex + 1) % medias.length);
   };
 
   const filteredMedias = medias.filter((media) => {
@@ -149,7 +160,7 @@ import InviteModal from './InviteModal';
         </header>
 
         <div className="media-grid">
-          {filteredMedias.map((media) => {
+          {filteredMedias.map((media, i) => {
             const reactions = reactionsMap[media._id] || [];
             const currentUserReaction = reactions.find(r => r.id_utilisateur._id === currentUserId);
             const otherReactions = reactions.filter(r => r.id_utilisateur._id !== currentUserId);
@@ -215,21 +226,15 @@ import InviteModal from './InviteModal';
         </div>
 
           {selectedIndex !== null && (
-            <div className="lightbox" onClick={() => setSelectedIndex(null)}>
-              <div
-                className={`slide-media ${slideDirection}`}
-                key={medias[selectedIndex]._id}
-                onClick={(e) => e.stopPropagation()}
-              >
-                {medias[selectedIndex].type_media === 'photo' ? (
-                  <img src={medias[selectedIndex].url} alt="zoom" />
-                ) : (
-                  <video src={medias[selectedIndex].url} controls autoPlay />
-                )}
-              </div>
-              <button className="lightbox-prev" onClick={(e) => { e.stopPropagation(); handlePrev(); }}>❮</button>
-              <button className="lightbox-next" onClick={(e) => { e.stopPropagation(); handleNext(); }}>❯</button>
-            </div>
+            <MediaLightbox
+              media={medias[selectedIndex]}
+              onClose={() => setSelectedIndex(null)}
+              currentUserId={currentUserId}
+              handlePrev={handlePrev}
+              handleNext={handleNext}
+              slideDirection={slideDirection}
+              key={medias[selectedIndex]?._id}
+            />
           )}
 
           {showDeleteModal && (
@@ -320,7 +325,7 @@ import InviteModal from './InviteModal';
             </div>
           )}
         </div>
-      </>
+      </div>
     );
   }
 
