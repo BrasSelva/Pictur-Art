@@ -10,6 +10,9 @@ import MediaLightbox from '../../components/media/MediaLightbox';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
 
+import InviteModal from '../../pages/media/InviteModal';
+
+
 function MediaPage() {
   const { id_album } = useParams();
   const navigate = useNavigate();
@@ -22,6 +25,12 @@ function MediaPage() {
   const [selectedMedia, setSelectedMedia] = useState(null);
   const [mediaToDelete, setMediaToDelete] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [search, setSearch] = useState('');
+  const [date, setDate] = useState('');
+  const [auteur, setAuteur] = useState('');
+  const [albumFilter, setAlbumFilter] = useState('');
 
   const [search, setSearch] = useState('');
   const [date, setDate] = useState('');
@@ -97,30 +106,40 @@ function MediaPage() {
   if (loading) return <p>Chargement...</p>;
 
   return (
-    <div className="media-page-wrapper" style={{ display: 'flex', gap: '2rem', padding: '2rem' }}>
-      
-      {/* Barre de recherche */}
-      <div style={{ minWidth: '300px' }}>
-        <SearchBar
-          search={search}
-          setSearch={setSearch}
-          date={date}
-          setDate={setDate}
-          auteur={auteur}
-          setAuteur={setAuteur}
-          album={albumFilter}
-          setAlbum={setAlbumFilter}
-        />
-      </div>
+    <div className="media-page-wrapper">
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        date={date}
+        setDate={setDate}
+        auteur={auteur}
+        setAuteur={setAuteur}
+        album={albumFilter}
+        setAlbum={setAlbumFilter}
+      />
 
-      {/* Contenu principal */}
       <div className="media-container" style={{ flex: 1 }}>
         <div className="media-header">
           <div className="header-content">
             <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
-            <UploadButton id_album={id_album} onUploadSuccess={() => fetchMedias()} />
+
+            <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
+
+            <InviteModal albumId={id_album} /> {/* ← ce bouton apparaîtra avant celui-ci */}
+
+            {album?.id_utilisateur?.toString() === currentUserId && (
+              <button
+                className="modal-confirm"
+                style={{ background: 'crimson', color: 'white' }}
+                onClick={() => setShowDeleteAlbumModal(true)}
+              >
+                Supprimer l'album
+              </button>
+            )}
           </div>
-        </div>
+
+        </header>
+
 
         <div className="media-grid">
           {filteredMedias.map((media) => {
