@@ -21,7 +21,6 @@ exports.creerUtilisateur = async (req, res) => {
 
     //Création de l'utilisateur
     const nouvelUtilisateur = new Utilisateur({ nom, email, mot_de_passe });
-    console.log("nouvelUtilisateur:",nouvelUtilisateur);
     
     await nouvelUtilisateur.save();
 
@@ -104,7 +103,6 @@ exports.motDePasseOublie = async (req, res) => {
 
 exports.changerMotDePasse = async (req, res) => {
   const { email, code, nouveauMotDePasse } = req.body;
-  console.log("changerMotDePasse body:", req.body);
   if (!email || !code || !nouveauMotDePasse) {
     return res.status(400).json({ message: "Tous les champs sont requis." });
   }
@@ -209,7 +207,6 @@ exports.modifierProfil = async (req, res) => {
     }
 
     utilisateur.nom = nom;
-    console.log("ancienMotDePasse:",ancienMotDePasse,"\nnouveauMotDePasse:",nouveauMotDePasse,"\nconfirmation:",confirmation);
 
     // Si modification du mot de passe
     if (ancienMotDePasse || nouveauMotDePasse || confirmation) {
@@ -218,7 +215,6 @@ exports.modifierProfil = async (req, res) => {
       }
 
       const passwordOk = await bcrypt.compare(ancienMotDePasse, utilisateur.mot_de_passe);
-      console.log('\npasswordOk:',passwordOk);
       
       if (!passwordOk) {
         return res.status(401).json({ message: "Ancien mot de passe incorrect." });
