@@ -29,9 +29,9 @@ function AppRouter() {
       <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
       <Route path="/codeTemporaire" element={<CodeTemporaire />} />
       <Route path="/nouveau-mot-de-passe" element={<NouveauMotDePasse />} />
-      <Route path="/MentionLegales" element={<MentionLegales />} />
-      <Route path="/CguPage" element={<CguPage />} />
-      <Route path="/APropos" element={<APropos />} />
+      <Route path="/mentionLegales" element={<MentionLegales />} />
+      <Route path="/cguPage" element={<CguPage />} />
+      <Route path="/aPropos" element={<APropos />} />
       <Route path="/contact" element={<Contact />} />
 
       {/* Routes protégées */}

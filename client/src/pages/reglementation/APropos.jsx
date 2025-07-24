@@ -1,10 +1,12 @@
 import React from 'react';
 import '../../assets/css/reglementation/Apropos.css';
+import { Link } from 'react-router-dom';
 
 const AProposPage = () => {
   return (
     <div className="apropos-container">
       <div className="apropos-header">
+        <Link to="/login" className="back-link">← Retour à l'accueil</Link>
         <h1>À propos de Pictur’Art</h1>
         <p>Une plateforme pensée pour le partage visuel en toute simplicité.</p>
       </div>
