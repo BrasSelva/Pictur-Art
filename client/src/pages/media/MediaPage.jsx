@@ -73,9 +73,6 @@ function MediaPage() {
     verifierAcces();
   }, [id_album, navigate]);
 
-  const handleReact = async (mediaId) => {
-    await fetchMedias(); // recharge les réactions pour tous les médias
-  };
 
   const handleDelete = async () => {
     try {
