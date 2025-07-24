@@ -9,6 +9,9 @@ import EmojiReactionButton from '../../components/media/EmojiReactionButton';
 import '../../assets/css/MediaPage.css';
 import '../../assets/css/SearchBar.css';
 
+import InviteModal from '../../pages/media/InviteModal';
+
+
 function MediaPage() {
   const { id_album } = useParams();
   const navigate = useNavigate();
@@ -21,6 +24,10 @@ function MediaPage() {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showDeleteAlbumModal, setShowDeleteAlbumModal] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
+  const [search, setSearch] = useState('');
+  const [date, setDate] = useState('');
+  const [auteur, setAuteur] = useState('');
+  const [albumFilter, setAlbumFilter] = useState('');
 
   const currentUserId = getUserIdFromToken();
 
@@ -122,14 +129,27 @@ function MediaPage() {
   if (loading) return <p>Chargement...</p>;
 
   return (
-    <div className="media-page-wrapper" style={{ display: 'flex', gap: '2rem', padding: '2rem' }}>
-      <SearchBar />
+    <div className="media-page-wrapper">
+      <SearchBar
+        search={search}
+        setSearch={setSearch}
+        date={date}
+        setDate={setDate}
+        auteur={auteur}
+        setAuteur={setAuteur}
+        album={albumFilter}
+        setAlbum={setAlbumFilter}
+      />
 
       <div className="media-container" style={{ flex: 1 }}>
         <header className='media-header'>
           <div className="header-content">
             <h2 className="page-title">{album?.nom || 'Album inconnu'}</h2>
+
             <UploadButton id_album={id_album} onUploadSuccess={(media) => setMedias((prev) => [media, ...prev])} />
+
+            <InviteModal albumId={id_album} /> {/* ← ce bouton apparaîtra avant celui-ci */}
+
             {album?.id_utilisateur?.toString() === currentUserId && (
               <button
                 className="modal-confirm"
@@ -140,14 +160,9 @@ function MediaPage() {
               </button>
             )}
           </div>
+
         </header>
 
-      <div className="header-content">
-        <button className="Invite-btn">
-          <span className="btn-icon"></span>
-          Inviter des amis
-        </button>
-      </div>
 
         <div className="media-grid">
           {medias.map((media) => {

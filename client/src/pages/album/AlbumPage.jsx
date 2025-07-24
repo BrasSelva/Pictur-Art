@@ -72,7 +72,7 @@ function AlbumPage() {
   });
 
   return (
-    <div className="album-page-wrapper" style={{ display: 'flex', gap: '2rem', padding: '2rem' }}>
+    <div className="album-page-wrapper">
       <SearchBar
         search={search}
         setSearch={setSearch}
