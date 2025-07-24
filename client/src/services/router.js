@@ -14,6 +14,10 @@ import MediaPage from '../pages/media/MediaPage';
 import CodeTemporaire from '../pages/login-register/Temporaire';
 import NouveauMotDePasse from '../pages/login-register/NouveauMotDePasse';
 import CreateAlbum from '../pages/album/CreateAlbum';
+import Contact from '../pages/Contact/Contact';
+import MentionLegales from '../pages/reglementation/MentionLegales';
+import CguPage from '../pages/reglementation/CguPage';
+import APropos from '../pages/reglementation/APropos';
 import Timeline from '../pages/timeline/Timeline';
 
 function AppRouter() {
@@ -26,6 +30,10 @@ function AppRouter() {
       <Route path="/mot-de-passe-oublie" element={<MotDePasseOublie />} />
       <Route path="/codeTemporaire" element={<CodeTemporaire />} />
       <Route path="/nouveau-mot-de-passe" element={<NouveauMotDePasse />} />
+      <Route path="/mentionLegales" element={<MentionLegales />} />
+      <Route path="/cguPage" element={<CguPage />} />
+      <Route path="/aPropos" element={<APropos />} />
+      <Route path="/contact" element={<Contact />} />
       
 
       {/* Routes protégées */}

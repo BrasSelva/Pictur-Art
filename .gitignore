@@ -10,7 +10,7 @@ server/uploads/
 /coverage
 
 # Production
-/build
+/client/build
 /dist
 
 # Systèmes
@@ -34,3 +34,5 @@ yarn-error.log*
 
 # MongoDB dump (si jamais)
 dump/
+# Local Netlify folder
+.netlify

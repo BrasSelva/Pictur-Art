@@ -7,11 +7,20 @@ const utilisateurRoutes = require('./routes/utilisateurRoutes');
 const albumRoutes = require('./routes/albumRoutes');
 const mediaRoutes = require('./routes/mediaRoutes');
 const membreAlbumRoutes = require('./routes/membrealbumRoutes')
+const reactionRoutes = require('./routes/reactionRoutes');
+const commentaireRoutes = require('./routes/commentaireRoutes');
+const emojiRoutes = require('./routes/emojiRoutes');
 
 dotenv.config();
 const app = express();
 
-app.use(cors());
+const corsOptions = {
+  origin: ['http://localhost:3000', 'https://picturart.netlify.app'],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI, {
@@ -23,9 +32,16 @@ mongoose.connect(process.env.MONGO_URI, {
 
 app.use('/api/utilisateurs', utilisateurRoutes);
 
+
 app.use('/api/albums', albumRoutes);
 
 app.use('/api/medias', mediaRoutes);
+
+app.use('/api/reactions', reactionRoutes);
+
+app.use('/api/commentaires', commentaireRoutes);
+
+app.use('/api/emojis', emojiRoutes);
 
 app.use('/uploads', express.static('uploads'));
 

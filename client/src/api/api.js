@@ -1,5 +1,7 @@
-// api.js
+//api.js
 import axios from 'axios';
+
+const isLocalhost = window.location.hostname === 'localhost';
 
 const api = axios.create({
   baseURL: 'http://localhost:5000/api',
@@ -25,7 +27,9 @@ api.interceptors.request.use((config) => {
 
 // Nouvelle instance pour les requêtes FormData
 export const apiForm = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: isLocalhost 
+    ? 'http://localhost:5000/api'
+    : 'https://backendpicturart.onrender.com/api',
 });
 
 // Ajout du token aussi pour apiForm

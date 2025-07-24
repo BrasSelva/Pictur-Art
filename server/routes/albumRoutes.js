@@ -4,8 +4,10 @@ const Album = require('../models/Album');
 const verifyToken = require('../middlewares/auth');
 const MembreAlbum = require('../models/MembreAlbum');
 const upload = require('../middlewares/multer');
+const Utilisateur = require('../models/Utilisateur');
 
-// GET /albums
+
+// GET /albums : Récupère les albums de l'utilisateur connecté
 router.get('/', verifyToken, async (req, res) => {
   try {
     // On cherche tous les albums où l'utilisateur est membre
@@ -117,7 +119,6 @@ router.patch('/:id/couverture', verifyToken, upload.single('couverture'), async 
     res.status(500).json({ message: 'Erreur serveur.' });
   }
 });
-
 
 
 module.exports = router;
