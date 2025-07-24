@@ -4,7 +4,9 @@ import axios from 'axios';
 const isLocalhost = window.location.hostname === 'localhost';
 
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: isLocalhost 
+    ? 'http://localhost:5000/api'
+    : 'https://backendpicturart.onrender.com/api',
   headers: {
     'Content-Type': 'application/json',
   },
