@@ -237,17 +237,6 @@ exports.modifierProfil = async (req, res) => {
     console.error("Erreur modification profil :", error);
     res.status(500).json({ message: "Erreur serveur" });
   }
-  router.get('/by-pseudo/:pseudo', async (req, res) => {
-  try {
-    const utilisateur = await Utilisateur.findOne({ nom: req.params.pseudo });
-    if (!utilisateur) {
-      return res.status(404).json({ message: 'Utilisateur non trouvé' });
-    }
-    res.json(utilisateur);
-  } catch (err) {
-    res.status(500).json({ message: 'Erreur serveur', error: err.message });
-  }
-});
 
 };
 
@@ -285,3 +274,14 @@ exports.contact = async (req, res) => {
   }
 };
 
+exports.getUtilisateurByPseudo = async (req, res) => {
+  try {
+    const utilisateur = await Utilisateur.findOne({ nom: req.params.pseudo });
+    if (!utilisateur) {
+      return res.status(404).json({ message: 'Utilisateur non trouvé' });
+    }
+    res.json(utilisateur);
+  } catch (err) {
+    res.status(500).json({ message: 'Erreur serveur', error: err.message });
+  }
+};
