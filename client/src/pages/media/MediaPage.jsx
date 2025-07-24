@@ -83,6 +83,19 @@ function MediaPage() {
     }
   };
 
+  const handleDeleteAlbum = async () => {
+    try {
+      const token = getToken();
+      await api.delete(`/albums/${id_album}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      navigate('/albumPage');
+    } catch (err) {
+      console.error("Erreur suppression album :", err);
+      alert("La suppression de l'album a échoué.");
+    }
+  };
+
   const handleReact = async (mediaId, emojiId) => {
     await fetchMedias(); // Recharge toutes les réactions à jour
   };
@@ -200,6 +213,19 @@ function MediaPage() {
               <div className="modal-actions">
                 <button className="modal-cancel" onClick={() => setShowDeleteModal(false)}>Annuler</button>
                 <button className="modal-confirm" onClick={handleDelete}>Supprimer</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showDeleteAlbumModal && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <h3>Supprimer l'album ?</h3>
+              <p>Cette action est irréversible. Tous les médias seront supprimés.</p>
+              <div className="modal-actions">
+                <button className="modal-cancel" onClick={() => setShowDeleteAlbumModal(false)}>Annuler</button>
+                <button className="modal-confirm" onClick={handleDeleteAlbum}>Supprimer</button>
               </div>
             </div>
           </div>
