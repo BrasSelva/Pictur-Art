@@ -1,6 +1,8 @@
 # Fichiers de dépendances
 client/node_modules/
 server/node_modules/
+node_modules/
+server/uploads/
 /.pnp
 .pnp.js
 
@@ -8,7 +10,7 @@ server/node_modules/
 /coverage
 
 # Production
-/build
+/client/build
 /dist
 
 # Systèmes
@@ -32,3 +34,5 @@ yarn-error.log*
 
 # MongoDB dump (si jamais)
 dump/
+# Local Netlify folder
+.netlify

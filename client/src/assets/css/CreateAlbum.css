@@ -1,0 +1,202 @@
+.create-album-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f8f9fa;
+  padding: 40px 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.create-album-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.page-title {
+  font-size: 32px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 40px;
+  text-align: left;
+}
+
+.content-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+.album-name-label {
+  display: block;
+  font-size: 18px;
+  color: #333;
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.album-name-input {
+  width: 100%;
+  max-width: 500px;
+  padding: 16px 20px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 18px;
+  background: white;
+  outline: none;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.album-name-input:focus {
+  border-color: #4A90E2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.cover-photo-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.cover-photo-section {
+  background-color: #eee;
+  border-radius: 12px;
+  padding: 40px 30px;
+  min-height: 265px;
+  width: 100%;
+  max-width: 500px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s, box-shadow 0.2s;
+}
+
+.cover-photo-section:hover {
+  background-color: #ddd;
+  box-shadow: 0 0 0 2px #4A90E2;
+}
+
+.cover-upload-area {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center; 
+}
+
+.cover-preview-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.cover-preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+.remove-cover-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  padding: 4px;
+  border-radius: 50%;
+  transition: background 0.2s ease;
+}
+
+.remove-cover-button:hover {
+  background: rgba(255, 59, 48, 0.1);
+}
+
+.camera-icon {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.camera-icon svg {
+  width: 56px;
+  height: 56px;
+  display: block;
+}
+
+.cover-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #333;
+  margin: 0;
+  max-width: 250px;
+  line-height: 1.3;
+}
+
+/* Bouton créer l'album */
+.create-album-button {
+  background: #e67e22;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 20px 40px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  max-width: 300px;
+  margin: 20px auto 0;
+  transition: background-color 0.2s, transform 0.2s;
+}
+
+.create-album-button:hover {
+  background: #d35400;
+  transform: translateY(-1px);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .create-album-wrapper {
+    max-width: 800px;
+  }
+
+  .cover-photo-section {
+    padding: 40px 25px;
+    min-height: 250px;
+  }
+}
+
+@media (max-width: 768px) {
+  .create-album-container {
+    padding: 30px 15px;
+  }
+
+  .page-title {
+    font-size: 28px;
+    margin-bottom: 30px;
+  }
+
+  .album-name-input {
+    font-size: 16px;
+    padding: 14px 18px;
+  }
+
+  .cover-photo-section {
+    padding: 35px 20px;
+    min-height: 265px;
+  }
+
+  .cover-title {
+    font-size: 18px;
+  }
+}
